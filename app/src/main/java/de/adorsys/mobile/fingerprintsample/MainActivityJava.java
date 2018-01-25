@@ -60,6 +60,6 @@ public class MainActivityJava extends AppCompatActivity implements Authenticatio
         iconFingerprintError = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_fingerprint_off, getTheme());
 
         // You can also assign a map of error strings for the errors defined in the lib as second parameter
-        fingerprintAuthenticator = new FingerprintAuthenticator(getApplicationContext(), Collections.<Integer, String>emptyMap());
+        fingerprintAuthenticator = new FingerprintAuthenticator(getApplicationContext(), Collections.<Integer, String>emptyMap(), false);
     }
 }

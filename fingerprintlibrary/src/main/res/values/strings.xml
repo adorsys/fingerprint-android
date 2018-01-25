@@ -1,5 +1,5 @@
 <resources>
-	<string name="fingerprint_error_hardware_unavailable">No fingerprint hardware available.</string>
+	<string name="fingerprint_error_hardware_unavailable">No fingerprint hardware detected.</string>
 	<string name="fingerprint_error_unable_to_process">Please try again and check if the fingerprint is activated in your phone\'s settings.</string>
 	<string name="fingerprint_error_timeout">Operation timed out. Try again.</string>
 	<string name="fingerprint_error_canceled">Operation cancelled.</string>

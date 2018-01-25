@@ -8,27 +8,35 @@ import android.os.Build
 import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
+import android.text.TextUtils
 
 /**
  * This class handles the fingerprint communication with the user's system and simplifies its API.
- * You can assign the class your personal error strings for the error codes, e.g.:
  *
- * val errors = mapOf(
- *     Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable)),
- *     Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS, getString(R.string.error_override_unable_to_process)),
- *     Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_TIMEOUT, getString(R.string.error_override_error_timeout)),
- *     Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_NO_SPACE, getString(R.string.error_override_no_space)),
- *     Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_CANCELED, getString(R.string.error_override_canceled)),
- *     Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT, getString(R.string.error_override_lockout)),
- *     Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_VENDOR, getString(R.string.error_override_vendor)),
- *     Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT, getString(R.string.error_override_lockout_permanent)),
- *     Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)))
+ * @param errors You can assign the class your personal error strings for the error codes, e.g.:
+ *     val errors = mapOf(
+ *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable)),
+ *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS, getString(R.string.error_override_unable_to_process)),
+ *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_TIMEOUT, getString(R.string.error_override_error_timeout)),
+ *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_NO_SPACE, getString(R.string.error_override_no_space)),
+ *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_CANCELED, getString(R.string.error_override_canceled)),
+ *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT, getString(R.string.error_override_lockout)),
+ *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_VENDOR, getString(R.string.error_override_vendor)),
+ *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT, getString(R.string.error_override_lockout_permanent)),
+ *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)))
+ *
+ * @param useSystemErrors You can force the library to use the human readable error string returned by the system
+ *     but in at least the two locked cases it is not recommended. The system error messages don't inform the user
+ *     what he/she has to do and the library doesn't subscribe the authorization until the necessary condition is true again.
+ *     This is explained in the library's error messages.
  *
  */
 @TargetApi(Build.VERSION_CODES.M)
-class FingerprintAuthenticator(private val context: Context, private val errors: Map<Int, String> = emptyMap()) : FingerprintManagerCompat.AuthenticationCallback() {
+class FingerprintAuthenticator(private val context: Context,
+                               private val errors: Map<Int, String> = emptyMap(),
+                               private val useSystemErrors: Boolean = false) : FingerprintManagerCompat.AuthenticationCallback() {
     private val handler = Handler()
-    private val lockoutRunnable = Runnable {
+    private val subscribeRunnable = Runnable {
         lockoutOccurred = false
         fingerprintManager?.authenticate(null, 0, null, this, null)
     }
@@ -64,6 +72,8 @@ class FingerprintAuthenticator(private val context: Context, private val errors:
 
         if (hasFingerprintEnrolled() && !lockoutOccurred) {
             fingerprintManager?.authenticate(null, 0, null, this, null)
+        } else if (lockoutOccurred) {
+            handler.postDelayed(subscribeRunnable, FINGERPRINT_LOCKOUT_TIME)
         }
     }
 
@@ -79,9 +89,8 @@ class FingerprintAuthenticator(private val context: Context, private val errors:
             FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT,
             FingerprintManager.FINGERPRINT_ERROR_LOCKOUT -> {
                 lockoutOccurred = true
-                handler.postDelayed(lockoutRunnable, FINGERPRINT_LOCKOUT_TIME)
             }
-            // workaround for Android bug: https://stackoverflow.com/a/40854259/3734116
+        // workaround for Android bug: https://stackoverflow.com/a/40854259/3734116
             FingerprintManager.FINGERPRINT_ERROR_CANCELED -> return
         }
 
@@ -121,40 +130,53 @@ class FingerprintAuthenticator(private val context: Context, private val errors:
         return when (code) {
             FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE ->
                 if (errors.contains(code)) errors[code]!!
-                else return errString?.toString() ?: context.getString(R.string.fingerprint_error_hardware_unavailable)
+                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_hardware_unavailable))
             FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS ->
                 if (errors.contains(code)) errors[code]!!
-                else return errString?.toString() ?: context.getString(R.string.fingerprint_error_unable_to_process)
+                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_unable_to_process))
             FingerprintManager.FINGERPRINT_ERROR_TIMEOUT ->
                 if (errors.contains(code)) errors[code]!!
-                else return errString?.toString() ?: context.getString(R.string.fingerprint_error_timeout)
+                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_timeout))
             FingerprintManager.FINGERPRINT_ERROR_NO_SPACE ->
                 if (errors.contains(code)) errors[code]!!
-                else return errString?.toString() ?: context.getString(R.string.fingerprint_error_no_space)
+                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_no_space))
             FingerprintManager.FINGERPRINT_ERROR_CANCELED ->
                 if (errors.contains(code)) errors[code]!!
-                else return errString?.toString() ?: context.getString(R.string.fingerprint_error_canceled)
+                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_canceled))
             FingerprintManager.FINGERPRINT_ERROR_LOCKOUT ->
                 if (errors.contains(code)) errors[code]!!
-                else return errString?.toString() ?: context.getString(R.string.fingerprint_error_lockout)
+                // you should not use the string returned by the system to make sure the user
+                // knows that he/she has to wait for 30 seconds
+                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_lockout))
             FingerprintManager.FINGERPRINT_ERROR_VENDOR ->
                 if (errors.contains(code)) errors[code]!!
-                else return errString?.toString() ?: context.getString(R.string.fingerprint_error_not_recognized)
+                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_not_recognized))
             FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT ->
                 if (errors.contains(code)) errors[code]!!
-                else return errString?.toString() ?: context.getString(R.string.fingerprint_error_lockout_permanent)
+                // you should not use the string returned by the system to make sure the user
+                // knows that he/she has to lock the system and return by using another pattern
+                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_lockout_permanent))
             FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED ->
                 if (errors.contains(code)) errors[code]!!
-                else return errString?.toString() ?: context.getString(R.string.fingerprint_error_user_cancelled)
+                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_user_cancelled))
             FINGERPRINT_ERROR_NOT_RECOGNIZED ->
                 if (errors.contains(code)) errors[code]!!
-                else return errString?.toString() ?: context.getString(R.string.fingerprint_error_not_recognized)
+                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_not_recognized))
             else -> return errString?.toString() ?: context.getString(R.string.fingerprint_error_unknown)
         }
     }
 
+    private fun determineErrorStringSource(systemErrorString: String?, libraryErrorString: String): String {
+        return if (useSystemErrors && !TextUtils.isEmpty(systemErrorString)) {
+            systemErrorString.toString()
+        } else {
+            libraryErrorString
+        }
+    }
+
     companion object {
-        private const val FINGERPRINT_LOCKOUT_TIME = 30000L
+        // Use a bit more than 30 seconds to prevent subscribing too early
+        private const val FINGERPRINT_LOCKOUT_TIME = 31000L
         const val FINGERPRINT_ERROR_NOT_RECOGNIZED = -999
     }
 }

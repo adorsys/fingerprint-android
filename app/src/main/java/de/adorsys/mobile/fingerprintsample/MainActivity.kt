@@ -61,6 +61,10 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
 //                Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)),
 //                Pair<Int, String>(FingerprintAuthenticator.FINGERPRINT_ERROR_NOT_RECOGNIZED, getString(R.string.error_override_not_recognized)))
 //        fingerprintAuthenticator = FingerprintAuthenticator(applicationContext, errors)
+
+        // You can also explicitly enable the system's error strings and only use the library ones if nothing is provided by the system
+//        fingerprintAuthenticator = FingerprintAuthenticator(applicationContext, useSystemErrors = true)
+
         fingerprintAuthenticator = FingerprintAuthenticator(applicationContext)
     }
 }

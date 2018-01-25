@@ -2,4 +2,14 @@
 	<string name="app_name">Fingerprint-Android</string>
     <string name="text_fingerprint">Touch the fingerprint sensor</string>
     <string name="message_success">Fingerprint matches the one registered in your phone\'s settings</string>
+    <string name="error_override_hw_unavailable">You don\'t have any suited hardware for using the fingerprint</string>
+    <string name="error_override_unable_to_process">The fingerprint sensor was unable to process your fingerprint.</string>
+    <string name="error_override_error_timeout">The current fingerprint request has been running too long.</string>
+    <string name="error_override_no_space">The fingerprint validation operation cannot be completed because there\'s not enough storage remaining to complete the operation.</string>
+    <string name="error_override_canceled">The operation was canceled because the fingerprint sensor is unavailable.</string>
+    <string name="error_override_lockout">The operation was canceled because the API is locked out due to too many attempts.</string>
+    <string name="error_override_vendor">This is what a vendor\'s device might show.</string>
+    <string name="error_override_lockout_permanent">The operation was canceled because the fingerprint validation locked your device too often.</string>
+    <string name="error_override_user_cancel">The user canceled the operation.</string>
+    <string name="error_override_not_recognized">The fingerprint was not recognized.</string>
 </resources>

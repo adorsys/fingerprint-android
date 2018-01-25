@@ -29,6 +29,17 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
         fingerprintAuthenticator.subscribe(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        fingerprintAuthenticator.subscribe(this)
+        val fingerprintsEnabled = fingerprintAuthenticator.hasFingerprintEnrolled()
+        fingerprintIcon = findViewById(R.id.login_fingerprint_icon)
+        fingerprintIcon.setImageDrawable(if (fingerprintsEnabled) iconFingerprintEnabled else iconFingerprintError)
+
+        if (!fingerprintsEnabled) {
+            Toast.makeText(this, R.string.error_override_hw_unavailable, Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,14 +62,5 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
 //                Pair<Int, String>(FingerprintAuthenticator.FINGERPRINT_ERROR_NOT_RECOGNIZED, getString(R.string.error_override_not_recognized)))
 //        fingerprintAuthenticator = FingerprintAuthenticator(applicationContext, errors)
         fingerprintAuthenticator = FingerprintAuthenticator(applicationContext)
-        fingerprintAuthenticator.subscribe(this)
-
-        val fingerprintsEnabled = fingerprintAuthenticator.hasFingerprintEnrolled()
-        fingerprintIcon = findViewById(R.id.login_fingerprint_icon)
-        fingerprintIcon.setImageDrawable(if (fingerprintsEnabled) iconFingerprintEnabled else iconFingerprintError)
-
-        if (!fingerprintsEnabled) {
-            Toast.makeText(this, R.string.error_override_hw_unavailable, Toast.LENGTH_LONG).show()
-        }
     }
 }

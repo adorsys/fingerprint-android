@@ -37,6 +37,19 @@ public class MainActivityJava extends AppCompatActivity implements Authenticatio
         fingerprintAuthenticator.subscribe(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        fingerprintAuthenticator.subscribe(this);
+        boolean fingerprintsEnabled = fingerprintAuthenticator.hasFingerprintEnrolled();
+        fingerprintIcon = findViewById(R.id.login_fingerprint_icon);
+        fingerprintIcon.setImageDrawable(fingerprintsEnabled ? iconFingerprintEnabled : iconFingerprintError);
+
+        if (!fingerprintsEnabled) {
+            Toast.makeText(this, R.string.error_override_hw_unavailable, Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,14 +61,5 @@ public class MainActivityJava extends AppCompatActivity implements Authenticatio
 
         // You can also assign a map of error strings for the errors defined in the lib as second parameter
         fingerprintAuthenticator = new FingerprintAuthenticator(getApplicationContext(), Collections.<Integer, String>emptyMap());
-        fingerprintAuthenticator.subscribe(this);
-
-        boolean fingerprintsEnabled = fingerprintAuthenticator.hasFingerprintEnrolled();
-        fingerprintIcon = findViewById(R.id.login_fingerprint_icon);
-        fingerprintIcon.setImageDrawable(fingerprintsEnabled ? iconFingerprintEnabled : iconFingerprintError);
-
-        if (!fingerprintsEnabled) {
-            Toast.makeText(this, R.string.error_override_hw_unavailable, Toast.LENGTH_LONG).show();
-        }
     }
 }

@@ -32,16 +32,16 @@ import android.text.TextUtils
  *
  */
 @TargetApi(Build.VERSION_CODES.M)
-class FingerprintAuthenticator(private val context: Context,
-                               private val errors: Map<Int, String> = emptyMap(),
-                               private val useSystemErrors: Boolean = false) : FingerprintManagerCompat.AuthenticationCallback() {
+class Finger(private val context: Context,
+             private val errors: Map<Int, String> = emptyMap(),
+             private val useSystemErrors: Boolean = false) : FingerprintManagerCompat.AuthenticationCallback() {
     private val handler = Handler()
     private val lockoutRunnable = Runnable {
         lockoutOccurred = false
-        authenticationListener?.onFingerprintLockoutReleased()
+        fingerListener?.onFingerprintLockoutReleased()
     }
     private var fingerprintManager: FingerprintManagerCompat? = null
-    private var authenticationListener: AuthenticationListener? = null
+    private var fingerListener: FingerListener? = null
     private var lockoutOccurred = false
 
     init {
@@ -64,15 +64,15 @@ class FingerprintAuthenticator(private val context: Context,
     }
 
     /**
-     * Subscribe for the fingerprint events by passing an {@link AuthenticationListener} and calling {@link FingerprintManager.authenticate}.
+     * Subscribe for the fingerprint events by passing an {@link FingerListener} and calling {@link FingerprintManager.authenticate}.
      * If the FingerprintManager is currently locked the lockoutRunnable is started instead of subscribing
      */
     // There is no active permission request required for using the fingerprint
     // and it is declared inside the AndroidManifest
     @SuppressLint("MissingPermission")
     @RequiresApi(Build.VERSION_CODES.M)
-    fun subscribe(listener: AuthenticationListener) {
-        authenticationListener = listener
+    fun subscribe(listener: FingerListener) {
+        fingerListener = listener
 
         if (hasFingerprintEnrolled() && !lockoutOccurred) {
             fingerprintManager?.authenticate(null, 0, null, this, null)
@@ -83,7 +83,7 @@ class FingerprintAuthenticator(private val context: Context,
      * Call unSubscribe to make sure that a listener is not notified after it should be.
      */
     fun unSubscribe() {
-        authenticationListener = null
+        fingerListener = null
     }
 
     /**
@@ -105,7 +105,7 @@ class FingerprintAuthenticator(private val context: Context,
             handler.postDelayed(lockoutRunnable, FINGERPRINT_LOCKOUT_TIME)
         }
 
-        authenticationListener?.onFingerprintAuthenticationFailure(getErrorMessage(errorCode, errString), errorCode)
+        fingerListener?.onFingerprintAuthenticationFailure(getErrorMessage(errorCode, errString), errorCode)
     }
 
     /**
@@ -117,7 +117,7 @@ class FingerprintAuthenticator(private val context: Context,
      * @param helpString A human-readable string that can be shown in UI
      */
     override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence) {
-        authenticationListener?.onFingerprintAuthenticationFailure(getErrorMessage(helpCode, helpString), helpCode)
+        fingerListener?.onFingerprintAuthenticationFailure(getErrorMessage(helpCode, helpString), helpCode)
     }
 
     /**
@@ -126,7 +126,7 @@ class FingerprintAuthenticator(private val context: Context,
      * @param result An object containing authentication-related data
      */
     override fun onAuthenticationSucceeded(result: FingerprintManagerCompat.AuthenticationResult) {
-        authenticationListener?.onFingerprintAuthenticationSuccess()
+        fingerListener?.onFingerprintAuthenticationSuccess()
     }
 
     /**
@@ -134,7 +134,7 @@ class FingerprintAuthenticator(private val context: Context,
      * The user probably used the wrong finger.
      */
     override fun onAuthenticationFailed() {
-        authenticationListener?.onFingerprintAuthenticationFailure(getErrorMessage(FINGERPRINT_ERROR_NOT_RECOGNIZED, null), FINGERPRINT_ERROR_NOT_RECOGNIZED)
+        fingerListener?.onFingerprintAuthenticationFailure(getErrorMessage(FINGERPRINT_ERROR_NOT_RECOGNIZED, null), FINGERPRINT_ERROR_NOT_RECOGNIZED)
     }
 
     private fun getErrorMessage(code: Int, errString: CharSequence?): String {

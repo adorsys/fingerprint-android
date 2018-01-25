@@ -6,11 +6,11 @@ import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.ImageView
 import android.widget.Toast
-import de.adorsys.mobile.fingerprintlibrary.AuthenticationListener
-import de.adorsys.mobile.fingerprintlibrary.FingerprintAuthenticator
+import de.adorsys.mobile.fingerprintlibrary.Finger
+import de.adorsys.mobile.fingerprintlibrary.FingerListener
 
-class MainActivity : AppCompatActivity(), AuthenticationListener {
-    private lateinit var fingerprintAuthenticator: FingerprintAuthenticator
+class MainActivity : AppCompatActivity(), FingerListener {
+    private lateinit var finger: Finger
     private lateinit var fingerprintIcon: ImageView
 
     private var iconFingerprintEnabled: Drawable? = null
@@ -20,18 +20,18 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
     override fun onFingerprintAuthenticationSuccess() {
         Toast.makeText(this, R.string.message_success, Toast.LENGTH_SHORT).show()
         fingerprintIcon.setImageDrawable(iconFingerprintEnabled)
-        fingerprintAuthenticator.subscribe(this)
+        finger.subscribe(this)
     }
 
     override fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int) {
         Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
         fingerprintIcon.setImageDrawable(iconFingerprintError)
-        fingerprintAuthenticator.subscribe(this)
+        finger.subscribe(this)
     }
 
     override fun onFingerprintLockoutReleased() {
         fingerprintIcon.setImageDrawable(iconFingerprintEnabled)
-        fingerprintAuthenticator.subscribe(this)
+        finger.subscribe(this)
     }
 
     override fun onResume() {
@@ -40,9 +40,9 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
         iconFingerprintEnabled = ResourcesCompat.getDrawable(resources, R.drawable.ic_fingerprint_on, theme)
         iconFingerprintError = ResourcesCompat.getDrawable(resources, R.drawable.ic_fingerprint_off, theme)
 
-        fingerprintAuthenticator.subscribe(this)
+        finger.subscribe(this)
 
-        val fingerprintsEnabled = fingerprintAuthenticator.hasFingerprintEnrolled()
+        val fingerprintsEnabled = finger.hasFingerprintEnrolled()
         fingerprintIcon = findViewById(R.id.login_fingerprint_icon)
         fingerprintIcon.setImageDrawable(if (fingerprintsEnabled) iconFingerprintEnabled else iconFingerprintError)
 
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
 
     override fun onPause() {
         super.onPause()
-        fingerprintAuthenticator.unSubscribe()
+        finger.unSubscribe()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,12 +71,12 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
 //                Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_VENDOR, getString(R.string.error_override_vendor)),
 //                Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT, getString(R.string.error_override_lockout_permanent)),
 //                Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)),
-//                Pair<Int, String>(FingerprintAuthenticator.FINGERPRINT_ERROR_NOT_RECOGNIZED, getString(R.string.error_override_not_recognized)))
-//        fingerprintAuthenticator = FingerprintAuthenticator(applicationContext, errors)
+//                Pair<Int, String>(Finger.FINGERPRINT_ERROR_NOT_RECOGNIZED, getString(R.string.error_override_not_recognized)))
+//        finger = Finger(applicationContext, errors)
 
         // You can also explicitly enable the system's error strings and only use the library ones if nothing is provided by the system
-//        fingerprintAuthenticator = FingerprintAuthenticator(applicationContext, useSystemErrors = true)
+//        finger = Finger(applicationContext, useSystemErrors = true)
 
-        fingerprintAuthenticator = FingerprintAuthenticator(applicationContext)
+        finger = Finger(applicationContext)
     }
 }

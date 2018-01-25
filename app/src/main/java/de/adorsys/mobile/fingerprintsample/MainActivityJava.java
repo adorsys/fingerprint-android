@@ -11,12 +11,12 @@ import android.widget.Toast;
 
 import java.util.Collections;
 
-import de.adorsys.mobile.fingerprintlibrary.AuthenticationListener;
-import de.adorsys.mobile.fingerprintlibrary.FingerprintAuthenticator;
+import de.adorsys.mobile.fingerprintlibrary.FingerListener;
+import de.adorsys.mobile.fingerprintlibrary.Finger;
 
 @SuppressLint("Registered") // Only exits for java documentation purposes
-public class MainActivityJava extends AppCompatActivity implements AuthenticationListener {
-    private FingerprintAuthenticator fingerprintAuthenticator;
+public class MainActivityJava extends AppCompatActivity implements FingerListener {
+    private Finger finger;
     private ImageView fingerprintIcon;
 
     private Drawable iconFingerprintEnabled;
@@ -27,28 +27,28 @@ public class MainActivityJava extends AppCompatActivity implements Authenticatio
     public void onFingerprintAuthenticationSuccess() {
         Toast.makeText(this, R.string.message_success, Toast.LENGTH_SHORT).show();
         fingerprintIcon.setImageDrawable(iconFingerprintEnabled);
-        fingerprintAuthenticator.subscribe(this);
+        finger.subscribe(this);
     }
 
     @Override
     public void onFingerprintAuthenticationFailure(@NonNull String errorMessage, int errorCode) {
         Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
         fingerprintIcon.setImageDrawable(iconFingerprintError);
-        fingerprintAuthenticator.subscribe(this);
+        finger.subscribe(this);
     }
 
     @Override
     public void onFingerprintLockoutReleased() {
         fingerprintIcon.setImageDrawable(iconFingerprintEnabled);
-        fingerprintAuthenticator.subscribe(this);
+        finger.subscribe(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        fingerprintAuthenticator.subscribe(this);
-        boolean fingerprintsEnabled = fingerprintAuthenticator.hasFingerprintEnrolled();
+        finger.subscribe(this);
+        boolean fingerprintsEnabled = finger.hasFingerprintEnrolled();
         fingerprintIcon = findViewById(R.id.login_fingerprint_icon);
         fingerprintIcon.setImageDrawable(fingerprintsEnabled ? iconFingerprintEnabled : iconFingerprintError);
 
@@ -60,7 +60,7 @@ public class MainActivityJava extends AppCompatActivity implements Authenticatio
     @Override
     protected void onPause() {
         super.onPause();
-        fingerprintAuthenticator.unSubscribe();
+        finger.unSubscribe();
     }
 
     @Override
@@ -72,6 +72,6 @@ public class MainActivityJava extends AppCompatActivity implements Authenticatio
         iconFingerprintError = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_fingerprint_off, getTheme());
 
         // You can also assign a map of error strings for the errors defined in the lib as second parameter
-        fingerprintAuthenticator = new FingerprintAuthenticator(getApplicationContext(), Collections.<Integer, String>emptyMap(), false);
+        finger = new Finger(getApplicationContext(), Collections.<Integer, String>emptyMap(), false);
     }
 }

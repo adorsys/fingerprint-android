@@ -1,6 +1,6 @@
 package de.adorsys.mobile.fingerprintlibrary
 
-interface AuthenticationListener {
+interface FingerListener {
 
     /**
      * Called after successful authentication.

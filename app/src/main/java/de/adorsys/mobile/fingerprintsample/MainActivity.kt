@@ -19,13 +19,18 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
 
     override fun onFingerprintAuthenticationSuccess() {
         Toast.makeText(this, R.string.message_success, Toast.LENGTH_SHORT).show()
-        fingerprintAuthenticator.subscribe(this)
         fingerprintIcon.setImageDrawable(iconFingerprintEnabled)
+        fingerprintAuthenticator.subscribe(this)
     }
 
     override fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int) {
         Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
         fingerprintIcon.setImageDrawable(iconFingerprintError)
+        fingerprintAuthenticator.subscribe(this)
+    }
+
+    override fun onFingerprintLockoutReleased() {
+        fingerprintIcon.setImageDrawable(iconFingerprintEnabled)
         fingerprintAuthenticator.subscribe(this)
     }
 
@@ -48,7 +53,7 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
 
     override fun onPause() {
         super.onPause()
-        fingerprintAuthenticator.unsubscribe()
+        fingerprintAuthenticator.unSubscribe()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

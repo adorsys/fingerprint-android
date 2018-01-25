@@ -36,9 +36,9 @@ class FingerprintAuthenticator(private val context: Context,
                                private val errors: Map<Int, String> = emptyMap(),
                                private val useSystemErrors: Boolean = false) : FingerprintManagerCompat.AuthenticationCallback() {
     private val handler = Handler()
-    private val subscribeRunnable = Runnable {
+    private val lockoutRunnable = Runnable {
         lockoutOccurred = false
-        fingerprintManager?.authenticate(null, 0, null, this, null)
+        authenticationListener?.onFingerprintLockoutReleased()
     }
     private var fingerprintManager: FingerprintManagerCompat? = null
     private var authenticationListener: AuthenticationListener? = null
@@ -63,6 +63,10 @@ class FingerprintAuthenticator(private val context: Context,
                 && fingerprintManager!!.hasEnrolledFingerprints())
     }
 
+    /**
+     * Subscribe for the fingerprint events by passing an {@link AuthenticationListener} and calling {@link FingerprintManager.authenticate}.
+     * If the FingerprintManager is currently locked the lockoutRunnable is started instead of subscribing
+     */
     // There is no active permission request required for using the fingerprint
     // and it is declared inside the AndroidManifest
     @SuppressLint("MissingPermission")
@@ -72,12 +76,13 @@ class FingerprintAuthenticator(private val context: Context,
 
         if (hasFingerprintEnrolled() && !lockoutOccurred) {
             fingerprintManager?.authenticate(null, 0, null, this, null)
-        } else if (lockoutOccurred) {
-            handler.postDelayed(subscribeRunnable, FINGERPRINT_LOCKOUT_TIME)
         }
     }
 
-    fun unsubscribe() {
+    /**
+     * Call unSubscribe to make sure that a listener is not notified after it should be.
+     */
+    fun unSubscribe() {
         authenticationListener = null
     }
 
@@ -89,13 +94,15 @@ class FingerprintAuthenticator(private val context: Context,
      * @param errString A human-readable error string that can be shown in UI
      */
     override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-        when (errorCode) {
-            FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT,
-            FingerprintManager.FINGERPRINT_ERROR_LOCKOUT -> {
-                lockoutOccurred = true
-            }
-        // workaround for Android bug: https://stackoverflow.com/a/40854259/3734116
-            FingerprintManager.FINGERPRINT_ERROR_CANCELED -> return
+        // workaround for FINGERPRINT_ERROR_CANCELED / Android bug: https://stackoverflow.com/a/40854259/3734116
+        // lockoutOccurred has to be checked here and set to true after sending error message
+        // to make sure the error message is send once but not twice
+        if (errorCode == FingerprintManager.FINGERPRINT_ERROR_CANCELED || lockoutOccurred) {
+            return
+        }
+        if (errorCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT && !lockoutOccurred) {
+            lockoutOccurred = true
+            handler.postDelayed(lockoutRunnable, FINGERPRINT_LOCKOUT_TIME)
         }
 
         authenticationListener?.onFingerprintAuthenticationFailure(getErrorMessage(errorCode, errString), errorCode)
@@ -180,7 +187,7 @@ class FingerprintAuthenticator(private val context: Context,
 
     companion object {
         // Use a bit more than 30 seconds to prevent subscribing too early
-        private const val FINGERPRINT_LOCKOUT_TIME = 31000L
+        private const val FINGERPRINT_LOCKOUT_TIME = 30000L
         const val FINGERPRINT_ERROR_NOT_RECOGNIZED = -999
     }
 }

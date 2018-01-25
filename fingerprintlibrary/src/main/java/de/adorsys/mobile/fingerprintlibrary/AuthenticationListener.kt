@@ -18,4 +18,10 @@ interface AuthenticationListener {
      * constants defined in the module for possible values and their meanings.
      */
     fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int)
+
+    /**
+     * Called after the lock is released. Used to inform the application that it can
+     * subscribe again and update its ui.
+     */
+    fun onFingerprintLockoutReleased()
 }

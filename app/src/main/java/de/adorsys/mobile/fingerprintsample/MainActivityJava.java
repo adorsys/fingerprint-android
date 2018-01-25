@@ -26,14 +26,20 @@ public class MainActivityJava extends AppCompatActivity implements Authenticatio
     @Override
     public void onFingerprintAuthenticationSuccess() {
         Toast.makeText(this, R.string.message_success, Toast.LENGTH_SHORT).show();
-        fingerprintAuthenticator.subscribe(this);
         fingerprintIcon.setImageDrawable(iconFingerprintEnabled);
+        fingerprintAuthenticator.subscribe(this);
     }
 
     @Override
     public void onFingerprintAuthenticationFailure(@NonNull String errorMessage, int errorCode) {
         Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
         fingerprintIcon.setImageDrawable(iconFingerprintError);
+        fingerprintAuthenticator.subscribe(this);
+    }
+
+    @Override
+    public void onFingerprintLockoutReleased() {
+        fingerprintIcon.setImageDrawable(iconFingerprintEnabled);
         fingerprintAuthenticator.subscribe(this);
     }
 
@@ -54,7 +60,7 @@ public class MainActivityJava extends AppCompatActivity implements Authenticatio
     @Override
     protected void onPause() {
         super.onPause();
-        fingerprintAuthenticator.unsubscribe();
+        fingerprintAuthenticator.unSubscribe();
     }
 
     @Override

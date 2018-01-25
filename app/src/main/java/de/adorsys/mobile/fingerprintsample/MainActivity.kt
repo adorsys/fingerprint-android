@@ -44,5 +44,9 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
         val fingerprintsEnabled = fingerprintAuthenticator.hasFingerprintEnrolled()
         fingerprintIcon = findViewById(R.id.login_fingerprint_icon)
         fingerprintIcon.setImageDrawable(if (fingerprintsEnabled) iconFingerprintEnabled else iconFingerprintError)
+
+        if (!fingerprintsEnabled) {
+            Toast.makeText(this, R.string.error_override_hw_unavailable, Toast.LENGTH_LONG).show()
+        }
     }
 }

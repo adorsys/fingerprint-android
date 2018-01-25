@@ -14,7 +14,7 @@ import java.util.Collections;
 import de.adorsys.mobile.fingerprintlibrary.AuthenticationListener;
 import de.adorsys.mobile.fingerprintlibrary.FingerprintAuthenticator;
 
-@SuppressLint("Registered")
+@SuppressLint("Registered") // Only exits for java documentation purposes
 public class MainActivityJava extends AppCompatActivity implements AuthenticationListener {
     private FingerprintAuthenticator fingerprintAuthenticator;
     private ImageView fingerprintIcon;

@@ -52,6 +52,12 @@ public class MainActivityJava extends AppCompatActivity implements Authenticatio
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        fingerprintAuthenticator.unsubscribe();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

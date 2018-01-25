@@ -41,6 +41,11 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        fingerprintAuthenticator.unsubscribe()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

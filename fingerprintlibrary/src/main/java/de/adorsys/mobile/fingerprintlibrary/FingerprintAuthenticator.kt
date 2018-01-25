@@ -77,6 +77,10 @@ class FingerprintAuthenticator(private val context: Context,
         }
     }
 
+    fun unsubscribe() {
+        authenticationListener = null
+    }
+
     /**
      * Called when an unrecoverable error has been encountered and the operation is complete.
      * No further callbacks will be made on this object.

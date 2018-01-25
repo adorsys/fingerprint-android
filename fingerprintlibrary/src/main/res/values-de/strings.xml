@@ -1,0 +1,9 @@
+<resources>
+	<string name="fingerprint_error_hardware_unavailable">Fingerabdruckhardware nicht verfügbar.</string>
+	<string name="fingerprint_error_unable_to_process">Bitte versuche es erneut und überprüfe, ob der Fingerabdruck in Deinem Telefon registriert ist.</string>
+	<string name="fingerprint_error_timeout">Zeitüberschreitung. Versuche es erneut.</string>
+	<string name="fingerprint_error_canceled">Vorgang abgebrochen.</string>
+	<string name="fingerprint_error_lockout">Zu viele Versuche. Versuche es später erneut.</string>
+	<string name="fingerprint_error_general">Bitte versuche es erneut.</string>
+	<string name="fingerprint_error_unknown">Unbekannter Fehler. Bitte versuche es erneut.</string>
+</resources>

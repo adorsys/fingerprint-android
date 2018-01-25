@@ -1,3 +1,9 @@
 <resources>
-	<string name="app_name">Fingerprint Library</string>
+	<string name="fingerprint_error_hardware_unavailable">No fingerprint hardware available.</string>
+	<string name="fingerprint_error_unable_to_process">Please try again and check if the fingerprint is activated in your phone\'s settings.</string>
+	<string name="fingerprint_error_timeout">Operation timed out. Try again.</string>
+	<string name="fingerprint_error_canceled">Operation cancelled.</string>
+	<string name="fingerprint_error_lockout">Too many attempts. Try again later.</string>
+	<string name="fingerprint_error_general">Something went wrong. Please try again later.</string>
+	<string name="fingerprint_error_unknown">Unknown error. Please try again later.</string>
 </resources>

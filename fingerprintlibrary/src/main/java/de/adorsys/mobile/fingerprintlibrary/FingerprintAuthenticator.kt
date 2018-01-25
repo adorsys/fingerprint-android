@@ -81,6 +81,8 @@ class FingerprintAuthenticator(private val context: Context, private val errors:
                 lockoutOccurred = true
                 handler.postDelayed(lockoutRunnable, FINGERPRINT_LOCKOUT_TIME)
             }
+            // workaround for Android bug: https://stackoverflow.com/a/40854259/3734116
+            FingerprintManager.FINGERPRINT_ERROR_CANCELED -> return
         }
 
         authenticationListener?.onFingerprintAuthenticationFailure(getErrorMessage(errorCode, errString), errorCode)

@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
         iconFingerprintEnabled = ResourcesCompat.getDrawable(resources, R.drawable.ic_fingerprint_on, theme)
         iconFingerprintError = ResourcesCompat.getDrawable(resources, R.drawable.ic_fingerprint_off, theme)
 
+        // You can also assign a map of error strings for the errors defined in the lib as second parameter
         fingerprintAuthenticator = FingerprintAuthenticator(applicationContext)
         fingerprintAuthenticator.register(this)
 

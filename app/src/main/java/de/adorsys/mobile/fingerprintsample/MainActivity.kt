@@ -1,7 +1,6 @@
 package de.adorsys.mobile.fingerprintsample
 
 import android.graphics.drawable.Drawable
-import android.hardware.fingerprint.FingerprintManager
 import android.os.Bundle
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
@@ -20,14 +19,14 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
 
     override fun onFingerprintAuthenticationSuccess() {
         Toast.makeText(this, R.string.message_success, Toast.LENGTH_SHORT).show()
-        fingerprintAuthenticator.register(this)
+        fingerprintAuthenticator.subscribe(this)
         fingerprintIcon.setImageDrawable(iconFingerprintEnabled)
     }
 
     override fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int) {
         Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-        fingerprintAuthenticator.register(this)
         fingerprintIcon.setImageDrawable(iconFingerprintError)
+        fingerprintAuthenticator.subscribe(this)
     }
 
 
@@ -52,7 +51,7 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
 //                Pair<Int, String>(FingerprintAuthenticator.FINGERPRINT_ERROR_NOT_RECOGNIZED, getString(R.string.error_override_not_recognized)))
 //        fingerprintAuthenticator = FingerprintAuthenticator(applicationContext, errors)
         fingerprintAuthenticator = FingerprintAuthenticator(applicationContext)
-        fingerprintAuthenticator.register(this)
+        fingerprintAuthenticator.subscribe(this)
 
         val fingerprintsEnabled = fingerprintAuthenticator.hasFingerprintEnrolled()
         fingerprintIcon = findViewById(R.id.login_fingerprint_icon)

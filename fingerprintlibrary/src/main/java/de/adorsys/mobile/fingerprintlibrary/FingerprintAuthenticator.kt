@@ -5,6 +5,7 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
+import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
 
@@ -26,8 +27,14 @@ import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
  */
 @TargetApi(Build.VERSION_CODES.M)
 class FingerprintAuthenticator(private val context: Context, private val errors: Map<Int, String> = emptyMap()) : FingerprintManagerCompat.AuthenticationCallback() {
+    private val handler = Handler()
+    private val lockoutRunnable = Runnable {
+        lockoutOccurred = false
+        fingerprintManager?.authenticate(null, 0, null, this, null)
+    }
     private var fingerprintManager: FingerprintManagerCompat? = null
     private var authenticationListener: AuthenticationListener? = null
+    private var lockoutOccurred = false
 
     init {
         fingerprintManager =
@@ -52,10 +59,10 @@ class FingerprintAuthenticator(private val context: Context, private val errors:
     // and it is declared inside the AndroidManifest
     @SuppressLint("MissingPermission")
     @RequiresApi(Build.VERSION_CODES.M)
-    fun register(listener: AuthenticationListener) {
+    fun subscribe(listener: AuthenticationListener) {
         authenticationListener = listener
 
-        if (hasFingerprintEnrolled()) {
+        if (hasFingerprintEnrolled() && !lockoutOccurred) {
             fingerprintManager?.authenticate(null, 0, null, this, null)
         }
     }
@@ -68,9 +75,15 @@ class FingerprintAuthenticator(private val context: Context, private val errors:
      * @param errString A human-readable error string that can be shown in UI
      */
     override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-        if (errorCode != FingerprintManager.FINGERPRINT_ERROR_CANCELED) {
-            authenticationListener?.onFingerprintAuthenticationFailure(getErrorMessage(errorCode, errString), errorCode)
+        when (errorCode) {
+            FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT,
+            FingerprintManager.FINGERPRINT_ERROR_LOCKOUT -> {
+                lockoutOccurred = true
+                handler.postDelayed(lockoutRunnable, FINGERPRINT_LOCKOUT_TIME)
+            }
         }
+
+        authenticationListener?.onFingerprintAuthenticationFailure(getErrorMessage(errorCode, errString), errorCode)
     }
 
     /**
@@ -139,6 +152,7 @@ class FingerprintAuthenticator(private val context: Context, private val errors:
     }
 
     companion object {
+        private const val FINGERPRINT_LOCKOUT_TIME = 30000L
         const val FINGERPRINT_ERROR_NOT_RECOGNIZED = -999
     }
 }

@@ -31,7 +31,12 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
 
     override fun onResume() {
         super.onResume()
+
+        iconFingerprintEnabled = ResourcesCompat.getDrawable(resources, R.drawable.ic_fingerprint_on, theme)
+        iconFingerprintError = ResourcesCompat.getDrawable(resources, R.drawable.ic_fingerprint_off, theme)
+
         fingerprintAuthenticator.subscribe(this)
+
         val fingerprintsEnabled = fingerprintAuthenticator.hasFingerprintEnrolled()
         fingerprintIcon = findViewById(R.id.login_fingerprint_icon)
         fingerprintIcon.setImageDrawable(if (fingerprintsEnabled) iconFingerprintEnabled else iconFingerprintError)
@@ -49,9 +54,6 @@ class MainActivity : AppCompatActivity(), AuthenticationListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        iconFingerprintEnabled = ResourcesCompat.getDrawable(resources, R.drawable.ic_fingerprint_on, theme)
-        iconFingerprintError = ResourcesCompat.getDrawable(resources, R.drawable.ic_fingerprint_off, theme)
 
         // You can also assign a map of error strings for the errors defined in the lib as second parameter
 //        val errors = mapOf(

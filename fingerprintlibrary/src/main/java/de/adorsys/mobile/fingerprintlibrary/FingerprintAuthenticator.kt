@@ -9,7 +9,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
 
 @TargetApi(Build.VERSION_CODES.M)
-class FingerprintAuthenticator(private val context: Context) : FingerprintManagerCompat.AuthenticationCallback() {
+class FingerprintAuthenticator(private val context: Context, private val errors: Map<Int, String> = emptyMap()) : FingerprintManagerCompat.AuthenticationCallback() {
     private var fingerprintManager: FingerprintManagerCompat? = null
     private var authenticationListener: AuthenticationListener? = null
 
@@ -87,12 +87,18 @@ class FingerprintAuthenticator(private val context: Context) : FingerprintManage
 
     private fun getErrorMessage(code: Int): String {
         return when (code) {
-            FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE -> context.getString(R.string.fingerprint_error_hardware_unavailable)
-            FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS -> context.getString(R.string.fingerprint_error_unable_to_process)
-            FingerprintManager.FINGERPRINT_ERROR_TIMEOUT -> context.getString(R.string.fingerprint_error_timeout)
-            FingerprintManager.FINGERPRINT_ERROR_CANCELED -> context.getString(R.string.fingerprint_error_canceled)
-            FingerprintManager.FINGERPRINT_ERROR_LOCKOUT -> context.getString(R.string.fingerprint_error_lockout)
-            FINGERPRINT_GENERAL_ERROR -> context.getString(R.string.fingerprint_error_general)
+            FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE -> 
+                if (errors.contains(code)) errors[code]!! else context.getString(R.string.fingerprint_error_hardware_unavailable)
+            FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS ->
+                if (errors.contains(code)) errors[code]!! else context.getString(R.string.fingerprint_error_unable_to_process)
+            FingerprintManager.FINGERPRINT_ERROR_TIMEOUT ->
+                if (errors.contains(code)) errors[code]!! else context.getString(R.string.fingerprint_error_timeout)
+            FingerprintManager.FINGERPRINT_ERROR_CANCELED ->
+                if (errors.contains(code)) errors[code]!! else context.getString(R.string.fingerprint_error_canceled)
+            FingerprintManager.FINGERPRINT_ERROR_LOCKOUT ->
+                if (errors.contains(code)) errors[code]!! else context.getString(R.string.fingerprint_error_lockout)
+            FINGERPRINT_GENERAL_ERROR ->
+                if (errors.contains(code)) errors[code]!! else context.getString(R.string.fingerprint_error_general)
             else -> context.getString(R.string.fingerprint_error_unknown)
         }
     }

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.adorsys.mobile.fingerprintlibrary">
+    package="de.adorsys.android.finger">
 
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
 

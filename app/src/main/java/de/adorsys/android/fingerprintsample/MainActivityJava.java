@@ -1,4 +1,4 @@
-package de.adorsys.mobile.fingerprintsample;
+package de.adorsys.android.fingerprintsample;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import java.util.Collections;
 
-import de.adorsys.mobile.fingerprintlibrary.FingerListener;
-import de.adorsys.mobile.fingerprintlibrary.Finger;
+import de.adorsys.android.finger.FingerListener;
+import de.adorsys.android.finger.Finger;
 
 @SuppressLint("Registered") // Only exits for java documentation purposes
 public class MainActivityJava extends AppCompatActivity implements FingerListener {

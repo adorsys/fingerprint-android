@@ -1,5 +1,7 @@
 buildscript {
     ext.kotlin_version = '1.2.21'
+	ext.versionCode = 1
+	ext.versionName = '0.0.1'
     repositories {
 		jcenter()
 		google()
@@ -7,7 +9,13 @@ buildscript {
 	dependencies {
 		classpath 'com.android.tools.build:gradle:3.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
+		classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+	}
+}
+
+// Plugin used to upload authenticated files to BinTray through Gradle
+plugins {
+	id "com.jfrog.bintray" version "1.7.3"
 }
 
 allprojects {
@@ -19,4 +27,8 @@ allprojects {
 
 task clean(type: Delete) {
 	delete rootProject.buildDir
+}
+
+task('pV').doLast {
+	println "${versionName}"
 }

@@ -1,4 +1,4 @@
-package de.adorsys.mobile.fingerprintsample
+package de.adorsys.android.fingerprintsample
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -6,8 +6,8 @@ import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.ImageView
 import android.widget.Toast
-import de.adorsys.mobile.fingerprintlibrary.Finger
-import de.adorsys.mobile.fingerprintlibrary.FingerListener
+import de.adorsys.android.finger.Finger
+import de.adorsys.android.finger.FingerListener
 
 class MainActivity : AppCompatActivity(), FingerListener {
     private lateinit var finger: Finger

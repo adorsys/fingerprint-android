@@ -1,4 +1,4 @@
-package de.adorsys.mobile.fingerprintlibrary
+package de.adorsys.android.finger
 
 interface FingerListener {
 

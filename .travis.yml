@@ -41,7 +41,7 @@ android:
     - $HOME/.gradle/native
     - $HOME/.gradle/wrapper
 before_install:
-    - yes | sdkmanager "*;*"
+    - yes | sdkmanager
 before_script:
   - ./code-check.sh
 #after_success:

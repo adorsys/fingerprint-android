@@ -64,7 +64,7 @@ class Finger(private val context: Context,
     }
 
     /**
-     * Subscribe for the fingerprint events by passing an {@link FingerListener} and calling {@link FingerprintManager.authenticate}.
+     * Subscribe for the fingerprint events by passing an FingerListener and calling FingerprintManager.authenticate.
      * If the FingerprintManager is currently locked the lockoutRunnable is started instead of subscribing
      */
     // There is no active permission request required for using the fingerprint

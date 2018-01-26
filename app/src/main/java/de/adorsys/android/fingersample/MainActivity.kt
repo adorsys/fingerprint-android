@@ -1,4 +1,4 @@
-package de.adorsys.android.fingerprintsample
+package de.adorsys.android.fingersample
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle

@@ -43,7 +43,5 @@ android:
 before_install:
     - yes | sdkmanager "platforms;android-27"
     - yes | sdkmanager "build-tools;27.0.3"
-before_script:
-  - ./code-check.sh
-#after_success:
-#  - ./bintray-upload.sh
+after_success:
+  - ./bintray-upload.sh

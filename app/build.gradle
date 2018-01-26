@@ -5,7 +5,7 @@ android {
 	compileSdkVersion 27
 	buildToolsVersion "27.0.3"
 	defaultConfig {
-		applicationId "de.adorsys.android.fingerprint_android"
+		applicationId "de.adorsys.android.finger"
 		minSdkVersion 23
 		targetSdkVersion 27
 		versionCode versionCode

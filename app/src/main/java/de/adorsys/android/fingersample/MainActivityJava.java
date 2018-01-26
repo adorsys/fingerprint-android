@@ -1,4 +1,4 @@
-package de.adorsys.android.fingerprintsample;
+package de.adorsys.android.fingersample;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;

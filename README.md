@@ -6,6 +6,12 @@ This fingerprint library aims to make the use of fingerprint authentication in y
 * was there an error while validating the fingerprint (and which)
 * after the sensor was locked, when will it be available again
 
+First, include _finger_ in your project by adding
+  ````groovy
+implementation "de.adorsys.android:finger:${latestFingerVersion}"
+````
+  
+
 ## usage
 You can use _finger_ as follows:
 

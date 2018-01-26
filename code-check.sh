@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo -e "\033[0;32mStart normal check \033[0m"
-./gradlew check
+./gradlew lint
 echo -e "\033[0;32m Finished normal check \033[0m"
 
 echo -e "\033[0;32m Start checkstyle check \033[0m"

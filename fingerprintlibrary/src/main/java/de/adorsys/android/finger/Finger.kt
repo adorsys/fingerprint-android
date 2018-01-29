@@ -13,23 +13,13 @@ import android.text.TextUtils
 /**
  * This class handles the fingerprint communication with the user's system and simplifies its API.
  *
- * @param errors You can assign the class your personal error strings for the error codes, e.g.:
- *     val errors = mapOf(
- *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable)),
- *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS, getString(R.string.error_override_unable_to_process)),
- *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_TIMEOUT, getString(R.string.error_override_error_timeout)),
- *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_NO_SPACE, getString(R.string.error_override_no_space)),
- *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_CANCELED, getString(R.string.error_override_canceled)),
- *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT, getString(R.string.error_override_lockout)),
- *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_VENDOR, getString(R.string.error_override_vendor)),
- *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT, getString(R.string.error_override_lockout_permanent)),
- *         Pair<Int, String>(FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)))
+ * @param errors You can assign the class your personal error strings for the error codes by passing
+ *     a map of fingerprint error codes and their mappings
  *
  * @param useSystemErrors You can force the library to use the human readable error string returned by the system
  *     but in at least the two locked cases it is not recommended. The system error messages don't inform the user
  *     what he/she has to do and the library doesn't subscribe the authorization until the necessary condition is true again.
  *     This is explained in the library's error messages.
- *
  */
 @TargetApi(Build.VERSION_CODES.M)
 class Finger(private val context: Context,

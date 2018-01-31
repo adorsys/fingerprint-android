@@ -1,4 +1,4 @@
-package de.adorsys.android.fingerprintlibrary;
+package de.adorsys.android.finger;
 
 import org.junit.Test;
 

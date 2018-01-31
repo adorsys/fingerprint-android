@@ -1,18 +1,19 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'org.jetbrains.dokka-android'
 
 android {
-	compileSdkVersion 25
-	buildToolsVersion "25.0.2"
+	compileSdkVersion 27
+	buildToolsVersion "27.0.3"
 
 	defaultConfig {
-		minSdkVersion 15
-		targetSdkVersion 25
-		versionCode 1
-		versionName "1.0"
-
-		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+		minSdkVersion 21
+		targetSdkVersion 27
+		versionCode versionCode
+		versionName "${versionName}"
 	}
+
 	buildTypes {
 		release {
 			minifyEnabled false
@@ -22,10 +23,35 @@ android {
 }
 
 dependencies {
-	compile fileTree(dir: 'libs', include: ['*.jar'])
-	androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-		exclude group: 'com.android.support', module: 'support-annotations'
-	})
-	compile 'com.android.support:appcompat-v7:25.3.1'
-	testCompile 'junit:junit:4.12'
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+	testImplementation 'junit:junit:4.12'
 }
+
+ext {
+	bintrayRepo = 'adorsys'
+	bintrayName = 'finger'
+
+	publishedGroupId = 'de.adorsys.android'
+	libraryName = 'finger'
+	artifact = 'finger'
+
+	libraryDescription = 'finger'
+
+	siteUrl = 'https://www.adorsys.de/'
+	gitUrl = 'https://github.com/adorsys/fingerprint-android.git'
+
+	libraryVersion = "${versionName}"
+
+	developerId = 'andev'
+	developerName = 'Andev Adorsys'
+	developerEmail = 'adorsys.andev@gmail.com'
+
+	licenseName = 'The Apache Software License, Version 2.0'
+	licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+	allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'https://raw.githubusercontent.com/adorsys/jcenter-distribution/master/installv.gradle'
+apply from: 'https://raw.githubusercontent.com/adorsys/jcenter-distribution/master/bintrayv.gradle'

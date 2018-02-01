@@ -14,8 +14,6 @@ First, include _finger_ in your project by adding
 implementation "de.adorsys.android:finger:${latestFingerVersion}"
 ````
 
-Make sure you have Kotlin support enabled to be able to use this library (Tools -> Kotlin -> Configure Kotlin in Project).
-
 ## usage
 You can use _finger_ as follows:
 

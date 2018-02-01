@@ -23,7 +23,7 @@ android {
 dependencies {
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
 	implementation 'com.android.support:appcompat-v7:27.0.2'
-	implementation project(':fingerprintlibrary')
+	implementation project(':finger')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

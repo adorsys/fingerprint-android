@@ -1,1 +1,1 @@
-include ':app', ':fingerprintlibrary'
+include ':app', ':finger'

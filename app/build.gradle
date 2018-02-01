@@ -2,28 +2,28 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-	compileSdkVersion 27
-	buildToolsVersion "27.0.3"
-	defaultConfig {
-		applicationId "de.adorsys.android.fingersample"
-		minSdkVersion 23
-		targetSdkVersion 27
-		versionCode versionCode
-		versionName "${versionName}"
-		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-	}
-	buildTypes {
-		release {
-			minifyEnabled false
-			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-		}
-	}
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
+    defaultConfig {
+        applicationId "de.adorsys.android.fingersample"
+        minSdkVersion 23
+        targetSdkVersion 27
+        versionCode versionCode
+        versionName "${versionName}"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 }
 
 dependencies {
-	implementation fileTree(include: ['*.jar'], dir: 'libs')
-	implementation 'com.android.support:appcompat-v7:27.0.2'
-	implementation project(':finger')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation project(':finger')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

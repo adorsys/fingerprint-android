@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import java.util.Collections;
 
-import de.adorsys.android.finger.FingerListener;
 import de.adorsys.android.finger.Finger;
+import de.adorsys.android.finger.FingerListener;
 
 @SuppressLint("Registered") // Only exits for java documentation purposes
 public class MainActivityJava extends AppCompatActivity implements FingerListener {
@@ -22,25 +22,16 @@ public class MainActivityJava extends AppCompatActivity implements FingerListene
     private Drawable iconFingerprintEnabled;
     private Drawable iconFingerprintError;
 
-
     @Override
-    public void onFingerprintAuthenticationSuccess() {
-        Toast.makeText(this, R.string.message_success, Toast.LENGTH_SHORT).show();
-        fingerprintIcon.setImageDrawable(iconFingerprintEnabled);
-        finger.subscribe(this);
-    }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-    @Override
-    public void onFingerprintAuthenticationFailure(@NonNull String errorMessage, int errorCode) {
-        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
-        fingerprintIcon.setImageDrawable(iconFingerprintError);
-        finger.subscribe(this);
-    }
+        iconFingerprintEnabled = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_fingerprint_on, getTheme());
+        iconFingerprintError = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_fingerprint_off, getTheme());
 
-    @Override
-    public void onFingerprintLockoutReleased() {
-        fingerprintIcon.setImageDrawable(iconFingerprintEnabled);
-        finger.subscribe(this);
+        // You can also assign a map of error strings for the errors defined in the lib as second parameter
+        finger = new Finger(getApplicationContext(), Collections.<Integer, String>emptyMap(), false);
     }
 
     @Override
@@ -64,14 +55,22 @@ public class MainActivityJava extends AppCompatActivity implements FingerListene
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public void onFingerprintAuthenticationSuccess() {
+        Toast.makeText(this, R.string.message_success, Toast.LENGTH_SHORT).show();
+        fingerprintIcon.setImageDrawable(iconFingerprintEnabled);
+        finger.subscribe(this);
+    }
 
-        iconFingerprintEnabled = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_fingerprint_on, getTheme());
-        iconFingerprintError = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_fingerprint_off, getTheme());
+    @Override
+    public void onFingerprintAuthenticationFailure(@NonNull String errorMessage, int errorCode) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+        fingerprintIcon.setImageDrawable(iconFingerprintError);
+        finger.subscribe(this);
+    }
 
-        // You can also assign a map of error strings for the errors defined in the lib as second parameter
-        finger = new Finger(getApplicationContext(), Collections.<Integer, String>emptyMap(), false);
+    @Override
+    public void onFingerprintLockoutReleased() {
+        fingerprintIcon.setImageDrawable(iconFingerprintEnabled);
+        finger.subscribe(this);
     }
 }

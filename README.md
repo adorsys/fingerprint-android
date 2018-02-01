@@ -13,7 +13,6 @@ First, include _finger_ in your project by adding
   ````groovy
 implementation "de.adorsys.android:finger:${latestFingerVersion}"
 ````
-  
 
 ## usage
 You can use _finger_ as follows:

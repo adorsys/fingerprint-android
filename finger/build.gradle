@@ -4,53 +4,63 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'org.jetbrains.dokka-android'
 
 android {
-	compileSdkVersion 27
-	buildToolsVersion "27.0.3"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
-	defaultConfig {
-		minSdkVersion 21
-		targetSdkVersion 27
-		versionCode versionCode
-		versionName "${versionName}"
-	}
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode versionCode
+        versionName "${versionName}"
+    }
 
-	buildTypes {
-		release {
-			minifyEnabled false
-			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-		}
-	}
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 }
 
 dependencies {
-	implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-	testImplementation 'junit:junit:4.12'
+    // make sure there is no Kotlin dependency needed outside this library as the kotlin runtime dependency handles all the null checks
+    compileOnly "org.jetbrains.kotlin:kotlin-runtime:$kotlin_version"
+}
+
+// Make sure the compiler doesn't make null pointer checks as the kotlin runtime should do this part
+project.afterEvaluate {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            freeCompilerArgs = ['-Xno-call-assertions', '-Xno-param-assertions']
+        }
+    }
 }
 
 ext {
-	bintrayRepo = 'adorsys'
-	bintrayName = 'finger'
+    bintrayRepo = 'adorsys'
+    bintrayName = 'finger'
 
-	publishedGroupId = 'de.adorsys.android'
-	libraryName = 'finger'
-	artifact = 'finger'
+    publishedGroupId = 'de.adorsys.android'
+    libraryName = 'finger'
+    artifact = 'finger'
 
-	libraryDescription = 'finger'
+    libraryDescription = 'finger'
 
-	siteUrl = 'https://www.adorsys.de/'
-	gitUrl = 'https://github.com/adorsys/fingerprint-android.git'
+    siteUrl = 'https://www.adorsys.de/'
+    gitUrl = 'https://github.com/adorsys/fingerprint-android.git'
 
-	libraryVersion = "${versionName}"
+    libraryVersion = "${versionName}"
 
-	developerId = 'andev'
-	developerName = 'Andev Adorsys'
-	developerEmail = 'adorsys.andev@gmail.com'
+    developerId = 'andev'
+    developerName = 'Andev Adorsys'
+    developerEmail = 'adorsys.andev@gmail.com'
 
-	licenseName = 'The Apache Software License, Version 2.0'
-	licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-	allLicenses = ["Apache-2.0"]
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
 }
 
 apply from: 'https://raw.githubusercontent.com/adorsys/jcenter-distribution/master/installv.gradle'

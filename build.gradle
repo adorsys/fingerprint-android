@@ -1,8 +1,8 @@
 buildscript {
     ext.kotlin_version = '1.2.21'
     ext.dokka_version = '0.9.15'
-	ext.versionCode = 1
-	ext.versionName = '0.0.1'
+	ext.versionCode = 2
+	ext.versionName = '0.0.2'
     repositories {
 		jcenter()
 		google()

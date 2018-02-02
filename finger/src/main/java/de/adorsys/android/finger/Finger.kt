@@ -1,6 +1,7 @@
 package de.adorsys.android.finger
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
@@ -43,6 +44,7 @@ class Finger(private val context: Context,
     // There is no active permission request required for using the fingerprint
     // and it is declared inside the AndroidManifest
     @SuppressLint("MissingPermission")
+    @TargetApi(Build.VERSION_CODES.M)
     fun hasFingerprintEnrolled(): Boolean {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && fingerprintManager != null
@@ -57,6 +59,7 @@ class Finger(private val context: Context,
     // There is no active permission request required for using the fingerprint
     // and it is declared inside the AndroidManifest
     @SuppressLint("MissingPermission")
+    @TargetApi(Build.VERSION_CODES.M)
     fun subscribe(listener: FingerListener) {
         fingerListener = listener
 

@@ -6,10 +6,11 @@ android {
     buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "de.adorsys.android.fingersample"
-        minSdkVersion 23
+        minSdkVersion 14
         targetSdkVersion 27
         versionCode versionCode
         versionName "${versionName}"
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -18,12 +19,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        // Needed to prevent lint errors that only raise when calling lint gradle task
+        disable 'AllowBackup', 'UseCompoundDrawables', 'GoogleAppIndexingWarning'
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation project(':finger')
+    implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

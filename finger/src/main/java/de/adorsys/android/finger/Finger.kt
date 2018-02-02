@@ -6,7 +6,6 @@ import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
 import android.os.Handler
-import android.support.annotation.RequiresApi
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
 import android.text.TextUtils
 
@@ -21,7 +20,6 @@ import android.text.TextUtils
  *     what he/she has to do and the library doesn't subscribe the authorization until the necessary condition is true again.
  *     This is explained in the library's error messages.
  */
-@TargetApi(Build.VERSION_CODES.M)
 class Finger(private val context: Context,
              private val errors: Map<Int, String> = emptyMap(),
              private val useSystemErrors: Boolean = false) : FingerprintManagerCompat.AuthenticationCallback() {
@@ -46,6 +44,7 @@ class Finger(private val context: Context,
     // There is no active permission request required for using the fingerprint
     // and it is declared inside the AndroidManifest
     @SuppressLint("MissingPermission")
+    @TargetApi(Build.VERSION_CODES.M)
     fun hasFingerprintEnrolled(): Boolean {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && fingerprintManager != null
@@ -60,7 +59,7 @@ class Finger(private val context: Context,
     // There is no active permission request required for using the fingerprint
     // and it is declared inside the AndroidManifest
     @SuppressLint("MissingPermission")
-    @RequiresApi(Build.VERSION_CODES.M)
+    @TargetApi(Build.VERSION_CODES.M)
     fun subscribe(listener: FingerListener) {
         fingerListener = listener
 

@@ -8,10 +8,15 @@ android {
     buildToolsVersion "27.0.3"
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 14
         targetSdkVersion 27
         versionCode versionCode
         versionName "${versionName}"
+    }
+
+    lintOptions {
+        abortOnError false
+        disable 'UnusedResources'
     }
 
     buildTypes {

@@ -6,7 +6,7 @@ android {
     buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "de.adorsys.android.fingersample"
-        minSdkVersion 23
+        minSdkVersion 14
         targetSdkVersion 27
         versionCode versionCode
         versionName "${versionName}"

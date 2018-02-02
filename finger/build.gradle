@@ -12,7 +12,11 @@ android {
         targetSdkVersion 27
         versionCode versionCode
         versionName "${versionName}"
-        vectorDrawables.useSupportLibrary = true
+    }
+
+    lintOptions {
+        abortOnError false
+        disable 'UnusedResources'
     }
 
     buildTypes {

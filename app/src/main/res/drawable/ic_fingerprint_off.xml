@@ -1,5 +1,6 @@
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:name="lockscreen_fingerprint_draw_off"
     android:width="32dp"
     android:height="32dp"
@@ -39,7 +40,8 @@
                     android:strokeAlpha="0.5"
                     android:strokeColor="#ffcc0000"
                     android:strokeLineCap="round"
-                    android:strokeWidth="1.45"/>
+                    android:strokeWidth="1.45"
+                    tools:ignore="VectorPath"/>
             </group>
             <group android:name="ridge_2">
                 <path

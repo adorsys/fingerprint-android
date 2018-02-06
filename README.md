@@ -84,6 +84,7 @@ The latter uses only the system error messages if no own error message can be fo
 
 ### Proguard
 -keep class de.adorsys.android.finger.**
+
 -dontwarn de.adorsys.android.finger.**
 
 ### Contributors

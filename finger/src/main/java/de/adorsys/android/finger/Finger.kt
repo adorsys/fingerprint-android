@@ -47,9 +47,8 @@ class Finger(private val context: Context,
     @TargetApi(Build.VERSION_CODES.M)
     fun hasFingerprintEnrolled(): Boolean {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && fingerprintManager != null
-                && fingerprintManager!!.isHardwareDetected
-                && fingerprintManager!!.hasEnrolledFingerprints())
+                && fingerprintManager?.isHardwareDetected == true
+                && fingerprintManager?.hasEnrolledFingerprints() == true)
     }
 
     /**
@@ -129,38 +128,38 @@ class Finger(private val context: Context,
     private fun getErrorMessage(code: Int, errString: CharSequence?): String {
         return when (code) {
             FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE ->
-                if (errors.contains(code)) errors[code]!!
+                if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_hardware_unavailable))
             FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS ->
-                if (errors.contains(code)) errors[code]!!
+                if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_unable_to_process))
             FingerprintManager.FINGERPRINT_ERROR_TIMEOUT ->
-                if (errors.contains(code)) errors[code]!!
+                if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_timeout))
             FingerprintManager.FINGERPRINT_ERROR_NO_SPACE ->
-                if (errors.contains(code)) errors[code]!!
+                if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_no_space))
             FingerprintManager.FINGERPRINT_ERROR_CANCELED ->
-                if (errors.contains(code)) errors[code]!!
+                if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_canceled))
             FingerprintManager.FINGERPRINT_ERROR_LOCKOUT ->
-                if (errors.contains(code)) errors[code]!!
+                if (errors.contains(code)) errors.getValue(code)
                 // you should not use the string returned by the system to make sure the user
                 // knows that he/she has to wait for 30 seconds
                 else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_lockout))
             FingerprintManager.FINGERPRINT_ERROR_VENDOR ->
-                if (errors.contains(code)) errors[code]!!
+                if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_not_recognized))
             FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT ->
-                if (errors.contains(code)) errors[code]!!
+                if (errors.contains(code)) errors.getValue(code)
                 // you should not use the string returned by the system to make sure the user
                 // knows that he/she has to lock the system and return by using another pattern
                 else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_lockout_permanent))
             FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED ->
-                if (errors.contains(code)) errors[code]!!
+                if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_user_cancelled))
             FINGERPRINT_ERROR_NOT_RECOGNIZED ->
-                if (errors.contains(code)) errors[code]!!
+                if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_not_recognized))
             else -> return errString?.toString() ?: context.getString(R.string.fingerprint_error_unknown)
         }

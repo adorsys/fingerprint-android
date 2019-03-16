@@ -6,8 +6,8 @@ import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
 import android.os.Handler
-import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
 import android.text.TextUtils
+import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 
 /**
  * This class handles the fingerprint communication with the user's system and simplifies its API.

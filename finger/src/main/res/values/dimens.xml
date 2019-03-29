@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- dialog definitions -->
+    <dimen name="dialog_horizontal_padding">24dp</dimen>
+    <dimen name="dialog_top_padding">24dp</dimen>
+    <dimen name="dialog_title_bottom_margin">36dp</dimen>
+    <dimen name="dialog_subtitle_margin">28dp</dimen>
+    <dimen name="dialog_icon_right_margin">16dp</dimen>
+    <dimen name="dialog_touch_sensor_height">40dp</dimen>
+    <dimen name="dialog_touch_sensor_cta_vertical_padding">12dp</dimen>
+    <dimen name="dialog_button_container_height">52dp</dimen>
+    <dimen name="dialog_button_bottom_padding">8dp</dimen>
+</resources>

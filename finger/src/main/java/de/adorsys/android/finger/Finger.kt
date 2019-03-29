@@ -45,6 +45,8 @@ class Finger @JvmOverloads constructor(
     private var fingerListener: FingerListener? = null
     private var lockoutOccurred = false
 
+    private var fingerprintDialog: BottomSheetDialog? = null
+
     init {
         fingerprintManager =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -170,8 +172,6 @@ class Finger @JvmOverloads constructor(
         }
     }
 
-    private lateinit var fingerprintDialog: BottomSheetDialog
-
     private fun showFingerprintManagerDialog(
         context: Context,
         texts: Triple<String, String, String>,
@@ -184,18 +184,18 @@ class Finger @JvmOverloads constructor(
         val (appIcon, fingerprintIcon) = drawableRes
         val (cancelButtonText, onNegativeButtonAction) = buttonDefinition
 
-        if (!fingerprintDialog.isShowing) {
+        if (fingerprintDialog != null && fingerprintDialog?.isShowing != true) {
             fingerprintDialog = BottomSheetDialog(context)
-            fingerprintDialog.setContentView(dialogLayoutRes)
-            fingerprintDialog.setCancelable(true)
-            fingerprintDialog.show()
+            fingerprintDialog?.setContentView(dialogLayoutRes)
+            fingerprintDialog?.setCancelable(true)
+            fingerprintDialog?.show()
 
-            val appIconImageView = fingerprintDialog.findViewById<ImageView>(R.id.app_icon)
-            val titleTextView = fingerprintDialog.findViewById<TextView>(R.id.title_text_view)
-            val subtitleTextView = fingerprintDialog.findViewById<TextView>(R.id.subtitle_text_view)
-            val fingerprintIconImageView = fingerprintDialog.findViewById<ImageView>(R.id.fingerprint_icon)
-            val messageTextView = fingerprintDialog.findViewById<TextView>(R.id.message_text_view)
-            val cancelButton = fingerprintDialog.findViewById<Button>(R.id.cancel_button)
+            val appIconImageView = fingerprintDialog?.findViewById<ImageView>(R.id.app_icon)
+            val titleTextView = fingerprintDialog?.findViewById<TextView>(R.id.title_text_view)
+            val subtitleTextView = fingerprintDialog?.findViewById<TextView>(R.id.subtitle_text_view)
+            val fingerprintIconImageView = fingerprintDialog?.findViewById<ImageView>(R.id.fingerprint_icon)
+            val messageTextView = fingerprintDialog?.findViewById<TextView>(R.id.message_text_view)
+            val cancelButton = fingerprintDialog?.findViewById<Button>(R.id.cancel_button)
 
             titleTextView?.text = title
             subtitleTextView?.text = subtitle
@@ -208,7 +208,7 @@ class Finger @JvmOverloads constructor(
             cancelButton?.setOnClickListener {
                 unSubscribe()
                 onNegativeButtonAction?.invoke()
-                fingerprintDialog.dismiss()
+                fingerprintDialog?.dismiss()
             }
         }
 

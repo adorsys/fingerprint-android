@@ -3,7 +3,14 @@ package de.adorsys.android.finger
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.DialogInterface
+import android.hardware.biometrics.BiometricPrompt
+import android.hardware.biometrics.BiometricPrompt.BIOMETRIC_ERROR_HW_NOT_PRESENT
+import android.hardware.biometrics.BiometricPrompt.BIOMETRIC_ERROR_HW_UNAVAILABLE
+import android.hardware.biometrics.BiometricPrompt.BIOMETRIC_ERROR_LOCKOUT
+import android.hardware.biometrics.BiometricPrompt.BIOMETRIC_ERROR_NO_SPACE
 import android.hardware.fingerprint.FingerprintManager
+import android.hardware.fingerprint.FingerprintManager.FINGERPRINT_ERROR_VENDOR
 import android.os.Build
 import android.os.Handler
 import android.text.TextUtils
@@ -20,9 +27,13 @@ import androidx.core.hardware.fingerprint.FingerprintManagerCompat
  *     what he/she has to do and the library doesn't subscribe the authorization until the necessary condition is true again.
  *     This is explained in the library's error messages.
  */
-class Finger(private val context: Context,
-             private val errors: Map<Int, String> = emptyMap(),
-             private val useSystemErrors: Boolean = false) : FingerprintManagerCompat.AuthenticationCallback() {
+class Finger @JvmOverloads constructor(
+    context: Context,
+    private val errors: Map<Int, String> = emptyMap(),
+    private val useSystemErrors: Boolean = false
+) : FingerprintManagerCompat.AuthenticationCallback() {
+
+    private val applicationContext = context.applicationContext
     private val handler = Handler()
     private val lockoutRunnable = Runnable {
         lockoutOccurred = false
@@ -34,11 +45,11 @@ class Finger(private val context: Context,
 
     init {
         fingerprintManager =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    FingerprintManagerCompat.from(context)
-                } else {
-                    null
-                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                FingerprintManagerCompat.from(context)
+            } else {
+                null
+            }
     }
 
     // There is no active permission request required for using the fingerprint
@@ -127,41 +138,51 @@ class Finger(private val context: Context,
 
     private fun getErrorMessage(code: Int, errString: CharSequence?): String {
         return when (code) {
-            FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE ->
+            FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE,
+            BiometricPrompt.BIOMETRIC_ERROR_HW_NOT_PRESENT,
+            BiometricPrompt.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
                 if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_hardware_unavailable))
-            FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS ->
+                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_hardware_unavailable))
+            FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS,
+            BiometricPrompt.BIOMETRIC_ERROR_UNABLE_TO_PROCESS ->
                 if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_unable_to_process))
-            FingerprintManager.FINGERPRINT_ERROR_TIMEOUT ->
+                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_unable_to_process))
+            FingerprintManager.FINGERPRINT_ERROR_TIMEOUT,
+            BiometricPrompt.BIOMETRIC_ERROR_TIMEOUT ->
                 if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_timeout))
-            FingerprintManager.FINGERPRINT_ERROR_NO_SPACE ->
+                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_timeout))
+            FingerprintManager.FINGERPRINT_ERROR_NO_SPACE,
+            BiometricPrompt.BIOMETRIC_ERROR_NO_SPACE ->
                 if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_no_space))
-            FingerprintManager.FINGERPRINT_ERROR_CANCELED ->
+                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_no_space))
+            FingerprintManager.FINGERPRINT_ERROR_CANCELED,
+            BiometricPrompt.BIOMETRIC_ERROR_CANCELED ->
                 if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_canceled))
-            FingerprintManager.FINGERPRINT_ERROR_LOCKOUT ->
+                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_canceled))
+            FingerprintManager.FINGERPRINT_ERROR_LOCKOUT,
+            BiometricPrompt.BIOMETRIC_ERROR_LOCKOUT ->
                 if (errors.contains(code)) errors.getValue(code)
                 // you should not use the string returned by the system to make sure the user
                 // knows that he/she has to wait for 30 seconds
-                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_lockout))
-            FingerprintManager.FINGERPRINT_ERROR_VENDOR ->
+                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_lockout))
+            FingerprintManager.FINGERPRINT_ERROR_VENDOR,
+            BiometricPrompt.BIOMETRIC_ERROR_VENDOR ->
                 if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_not_recognized))
+                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_not_recognized))
             FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT ->
                 if (errors.contains(code)) errors.getValue(code)
                 // you should not use the string returned by the system to make sure the user
                 // knows that he/she has to lock the system and return by using another pattern
-                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_lockout_permanent))
-            FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED ->
+                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_lockout_permanent))
+            FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED,
+            BiometricPrompt.BIOMETRIC_ERROR_USER_CANCELED ->
                 if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_user_cancelled))
-            FINGERPRINT_ERROR_NOT_RECOGNIZED ->
+                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_user_cancelled))
+            FINGERPRINT_ERROR_NOT_RECOGNIZED,
+            BiometricPrompt.BIOMETRIC_ERROR_NO_BIOMETRICS ->
                 if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), context.getString(R.string.fingerprint_error_not_recognized))
-            else -> return errString?.toString() ?: context.getString(R.string.fingerprint_error_unknown)
+                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_not_recognized))
+            else -> return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
         }
     }
 

@@ -3,14 +3,12 @@ package de.adorsys.android.fingersample;
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.util.Collections;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import de.adorsys.android.finger.Finger;
 import de.adorsys.android.finger.FingerListener;
 
@@ -31,7 +29,7 @@ public class MainActivityJava extends AppCompatActivity implements FingerListene
         iconFingerprintError = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_fingerprint_off, getTheme());
 
         // You can also assign a map of error strings for the errors defined in the lib as second parameter
-        finger = new Finger(getApplicationContext(), Collections.<Integer, String>emptyMap(), false);
+        finger = new Finger(getApplicationContext());
     }
 
     @Override
@@ -40,6 +38,7 @@ public class MainActivityJava extends AppCompatActivity implements FingerListene
 
         finger.subscribe(this);
         boolean fingerprintsEnabled = finger.hasFingerprintEnrolled();
+
         fingerprintIcon = findViewById(R.id.login_fingerprint_icon);
         fingerprintIcon.setImageDrawable(fingerprintsEnabled ? iconFingerprintEnabled : iconFingerprintError);
 

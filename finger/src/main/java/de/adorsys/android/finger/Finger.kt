@@ -3,7 +3,6 @@ package de.adorsys.android.finger
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
-import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
 import android.os.Handler
 import android.text.TextUtils
@@ -74,43 +73,35 @@ class Finger @JvmOverloads constructor(
 
     private fun getErrorMessage(code: Int, errString: CharSequence?): String {
         return when (code) {
-            FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE,
             BiometricPrompt.ERROR_HW_NOT_PRESENT,
             BiometricPrompt.ERROR_HW_UNAVAILABLE ->
                 if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_hardware_unavailable))
-            FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS,
             BiometricPrompt.ERROR_UNABLE_TO_PROCESS ->
                 if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_unable_to_process))
-            FingerprintManager.FINGERPRINT_ERROR_TIMEOUT,
             BiometricPrompt.ERROR_TIMEOUT ->
                 if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_timeout))
-            FingerprintManager.FINGERPRINT_ERROR_NO_SPACE,
             BiometricPrompt.ERROR_NO_SPACE ->
                 if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_no_space))
-            FingerprintManager.FINGERPRINT_ERROR_CANCELED,
             BiometricPrompt.ERROR_CANCELED ->
                 if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_canceled))
-            FingerprintManager.FINGERPRINT_ERROR_LOCKOUT,
             BiometricPrompt.ERROR_LOCKOUT ->
                 if (errors.contains(code)) errors.getValue(code)
                 // you should not use the string returned by the system to make sure the user
                 // knows that he/she has to wait for 30 seconds
                 else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_lockout))
-            FingerprintManager.FINGERPRINT_ERROR_VENDOR,
             BiometricPrompt.ERROR_VENDOR ->
                 if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_not_recognized))
-            FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT ->
+            BiometricPrompt.ERROR_LOCKOUT_PERMANENT ->
                 if (errors.contains(code)) errors.getValue(code)
                 // you should not use the string returned by the system to make sure the user
                 // knows that he/she has to lock the system and return by using another pattern
                 else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_lockout_permanent))
-            FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED,
             BiometricPrompt.ERROR_USER_CANCELED ->
                 if (errors.contains(code)) errors.getValue(code)
                 else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_user_cancelled))

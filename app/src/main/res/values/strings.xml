@@ -3,4 +3,5 @@
     <string name="text_fingerprint">Touch the fingerprint sensor</string>
     <string name="message_success">Fingerprint matches the one registered in your phone\'s settings</string>
     <string name="error_override_hw_unavailable">You don\'t have any suited hardware for using the fingerprint</string>
+    <string name="text_show_dialog">show fingerprint dialog</string>
 </resources>

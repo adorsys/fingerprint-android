@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:animateLayoutChanges="true"
-    android:gravity="center"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/text_fingerprint"
-        android:textSize="24sp"/>
+    android:orientation="vertical"
+    android:gravity="center">
 
     <ImageView
         android:id="@+id/login_fingerprint_icon"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="center"
-        android:layout_marginTop="80dp"
-        app:srcCompat="@drawable/ic_fingerprint_on"
-        android:contentDescription="@null"/>
+        android:contentDescription="@null"
+        app:srcCompat="@drawable/ic_fingerprint_on"/>
+
+    <Button
+        android:id="@+id/show_dialog_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_margin"
+        android:text="@string/text_show_dialog"/>
 
 </LinearLayout>

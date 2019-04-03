@@ -2,6 +2,7 @@ package de.adorsys.android.fingersample
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -35,15 +36,32 @@ class MainActivity : AppCompatActivity(), FingerListener {
 
         fingerprintIcon = findViewById(R.id.login_fingerprint_icon)
         fingerprintIcon.setImageDrawable(if (fingerprintsEnabled) iconFingerprintEnabled else iconFingerprintError)
+        val showDialogButton = findViewById<Button>(R.id.show_dialog_button)
+        showDialogButton.setOnClickListener {
+            showDialog()
+        }
 
         if (!fingerprintsEnabled) {
             Toast.makeText(this, R.string.error_override_hw_unavailable, Toast.LENGTH_LONG).show()
+        } else {
+            showDialog()
         }
     }
 
     override fun onPause() {
         super.onPause()
         finger.unSubscribe()
+    }
+
+    private fun showDialog() {
+        finger.showDialog(
+            this,
+            Triple(
+                getString(R.string.text_fingerprint),         // title
+                null,                           // subtitle
+                null                              // description
+            )
+        )
     }
 
     override fun onFingerprintAuthenticationSuccess() {

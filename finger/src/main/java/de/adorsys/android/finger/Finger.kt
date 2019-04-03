@@ -138,10 +138,11 @@ class Finger @JvmOverloads constructor(
      * @param cancelButtonText contains the text resource needed for the button -
      * the string which should be displayed on the cancel button, defaults to android.R.string.cancel
      */
+    @JvmOverloads
     fun showDialog(
         activity: FragmentActivity,
-        strings: Triple<String, String, String>,
-        cancelButtonText: String?
+        strings: Triple<String, String?, String?>,
+        cancelButtonText: String? = null
     ) {
         handler.postDelayed({
             showBiometricPrompt(activity, strings, cancelButtonText)
@@ -150,7 +151,7 @@ class Finger @JvmOverloads constructor(
 
     private fun showBiometricPrompt(
         activity: FragmentActivity,
-        strings: Triple<String, String, String>,
+        strings: Triple<String, String?, String?>,
         cancelButtonText: String?
     ) {
 

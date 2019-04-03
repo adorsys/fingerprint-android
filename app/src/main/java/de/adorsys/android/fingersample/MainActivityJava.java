@@ -3,6 +3,8 @@ package de.adorsys.android.fingersample;
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import de.adorsys.android.finger.Finger;
 import de.adorsys.android.finger.FingerListener;
+import kotlin.Triple;
 
 @SuppressLint("Registered") // Only exits for java documentation purposes
 public class MainActivityJava extends AppCompatActivity implements FingerListener {
@@ -42,8 +45,18 @@ public class MainActivityJava extends AppCompatActivity implements FingerListene
         fingerprintIcon = findViewById(R.id.login_fingerprint_icon);
         fingerprintIcon.setImageDrawable(fingerprintsEnabled ? iconFingerprintEnabled : iconFingerprintError);
 
+        Button showDialogButton = findViewById(R.id.show_dialog_button);
+        showDialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+
         if (!fingerprintsEnabled) {
             Toast.makeText(this, R.string.error_override_hw_unavailable, Toast.LENGTH_LONG).show();
+        } else {
+            showDialog();
         }
     }
 
@@ -71,5 +84,16 @@ public class MainActivityJava extends AppCompatActivity implements FingerListene
     public void onFingerprintLockoutReleased() {
         fingerprintIcon.setImageDrawable(iconFingerprintEnabled);
         finger.subscribe(this);
+    }
+
+    private void showDialog() {
+        finger.showDialog(
+                this,
+                new Triple<String, String, String>(
+                        getString(R.string.text_fingerprint),   // title
+                        null,                           // subtitle
+                        null                              // description
+                )
+        );
     }
 }

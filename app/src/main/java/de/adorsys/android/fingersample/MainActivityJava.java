@@ -84,9 +84,12 @@ public class MainActivityJava extends AppCompatActivity implements FingerListene
         finger.showDialog(
                 this,
                 new Triple<String, String, String>(
-                        getString(R.string.text_fingerprint),   // title
-                        null,                           // subtitle
-                        null                              // description
+                        // title
+                        getString(R.string.text_fingerprint),
+                        // subtitle
+                        null,
+                        // description
+                        null
                 )
         );
     }

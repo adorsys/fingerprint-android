@@ -57,9 +57,12 @@ class MainActivity : AppCompatActivity(), FingerListener {
         finger.showDialog(
             this,
             Triple(
-                getString(R.string.text_fingerprint),         // title
-                null,                           // subtitle
-                null                              // description
+                // title
+                getString(R.string.text_fingerprint),
+                // subtitle
+                null,
+                // description
+                null
             )
         )
     }

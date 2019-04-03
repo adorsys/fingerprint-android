@@ -80,12 +80,6 @@ public class MainActivityJava extends AppCompatActivity implements FingerListene
         finger.subscribe(this);
     }
 
-    @Override
-    public void onFingerprintLockoutReleased() {
-        fingerprintIcon.setImageDrawable(iconFingerprintEnabled);
-        finger.subscribe(this);
-    }
-
     private void showDialog() {
         finger.showDialog(
                 this,

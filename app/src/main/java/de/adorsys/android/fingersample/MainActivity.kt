@@ -75,9 +75,4 @@ class MainActivity : AppCompatActivity(), FingerListener {
         fingerprintIcon.setImageDrawable(iconFingerprintError)
         finger.subscribe(this)
     }
-
-    override fun onFingerprintLockoutReleased() {
-        fingerprintIcon.setImageDrawable(iconFingerprintEnabled)
-        finger.subscribe(this)
-    }
 }

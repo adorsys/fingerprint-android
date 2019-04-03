@@ -11,8 +11,6 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.4.0-rc03'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        // Kotlin documentation generation
-        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
     }
 }
 

@@ -144,6 +144,8 @@ class Finger @JvmOverloads constructor(
         strings: Triple<String, String?, String?>,
         cancelButtonText: String? = null
     ) {
+        // temporary workaround for NullPointerException in androidx.biometric library
+        // See more at https://issuetracker.google.com/issues/122054485
         handler.postDelayed({
             showBiometricPrompt(activity, strings, cancelButtonText)
         }, 250)

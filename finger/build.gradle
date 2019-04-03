@@ -32,15 +32,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
-// Make sure the compiler doesn't make null pointer checks as the kotlin runtime should do this part
-project.afterEvaluate {
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-        kotlinOptions {
-            freeCompilerArgs = ['-Xno-call-assertions', '-Xno-param-assertions']
-        }
-    }
-}
-
 ext {
     bintrayRepo = 'adorsys'
     bintrayName = 'finger'

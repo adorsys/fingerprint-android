@@ -5,6 +5,7 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
+import android.os.Handler
 import android.text.TextUtils
 import androidx.biometric.BiometricPrompt
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
@@ -29,6 +30,7 @@ class Finger @JvmOverloads constructor(
 ) {
 
     private val applicationContext = context.applicationContext
+    private val handler = Handler()
     private var fingerprintManager: FingerprintManagerCompat? = null
     private var fingerListener: FingerListener? = null
 
@@ -141,11 +143,11 @@ class Finger @JvmOverloads constructor(
         strings: Triple<String, String, String>,
         cancelButtonText: String?
     ) {
-
-        showBiometricPrompt(activity, strings, cancelButtonText)
+        handler.postDelayed({
+            showBiometricPrompt(activity, strings, cancelButtonText)
+        }, 250)
     }
 
-    @TargetApi(Build.VERSION_CODES.P)
     private fun showBiometricPrompt(
         activity: FragmentActivity,
         strings: Triple<String, String, String>,
@@ -181,7 +183,7 @@ class Finger @JvmOverloads constructor(
             .setTitle(title)
             .setSubtitle(subtitle)
             .setDescription(description)
-            .setNegativeButtonText(cancelButtonText ?: applicationContext.getString(android.R.string.cancel))
+            .setNegativeButtonText(cancelButtonText ?: activity.getString(android.R.string.cancel))
             .build()
 
         prompt.authenticate(promptInfo)

@@ -1,15 +1,13 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'org.jetbrains.dokka-android'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode versionCode
         versionName "${versionName}"
     }
@@ -29,19 +27,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:27.0.2'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    // make sure there is no Kotlin dependency needed outside this library as the kotlin runtime dependency handles all the null checks
-    compileOnly "org.jetbrains.kotlin:kotlin-runtime:$kotlin_version"
-}
-
-// Make sure the compiler doesn't make null pointer checks as the kotlin runtime should do this part
-project.afterEvaluate {
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-        kotlinOptions {
-            freeCompilerArgs = ['-Xno-call-assertions', '-Xno-param-assertions']
-        }
-    }
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    api 'androidx.biometric:biometric:1.0.0-alpha03'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 ext {

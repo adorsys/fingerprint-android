@@ -2,10 +2,11 @@ package de.adorsys.android.fingersample
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.v4.content.res.ResourcesCompat
-import android.support.v7.app.AppCompatActivity
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import de.adorsys.android.finger.Finger
 import de.adorsys.android.finger.FingerListener
 
@@ -17,21 +18,10 @@ class MainActivity : AppCompatActivity(), FingerListener {
     private var iconFingerprintError: Drawable? = null
 
 
-    override fun onFingerprintAuthenticationSuccess() {
-        Toast.makeText(this, R.string.message_success, Toast.LENGTH_SHORT).show()
-        fingerprintIcon.setImageDrawable(iconFingerprintEnabled)
-        finger.subscribe(this)
-    }
-
-    override fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int) {
-        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-        fingerprintIcon.setImageDrawable(iconFingerprintError)
-        finger.subscribe(this)
-    }
-
-    override fun onFingerprintLockoutReleased() {
-        fingerprintIcon.setImageDrawable(iconFingerprintEnabled)
-        finger.subscribe(this)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        finger = Finger(applicationContext)
     }
 
     override fun onResume() {
@@ -43,11 +33,18 @@ class MainActivity : AppCompatActivity(), FingerListener {
         finger.subscribe(this)
 
         val fingerprintsEnabled = finger.hasFingerprintEnrolled()
+
         fingerprintIcon = findViewById(R.id.login_fingerprint_icon)
         fingerprintIcon.setImageDrawable(if (fingerprintsEnabled) iconFingerprintEnabled else iconFingerprintError)
+        val showDialogButton = findViewById<Button>(R.id.show_dialog_button)
+        showDialogButton.setOnClickListener {
+            showDialog()
+        }
 
         if (!fingerprintsEnabled) {
             Toast.makeText(this, R.string.error_override_hw_unavailable, Toast.LENGTH_LONG).show()
+        } else {
+            showDialog()
         }
     }
 
@@ -56,9 +53,29 @@ class MainActivity : AppCompatActivity(), FingerListener {
         finger.unSubscribe()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        finger = Finger(applicationContext)
+    private fun showDialog() {
+        finger.showDialog(
+            this,
+            Triple(
+                // title
+                getString(R.string.text_fingerprint),
+                // subtitle
+                null,
+                // description
+                null
+            )
+        )
+    }
+
+    override fun onFingerprintAuthenticationSuccess() {
+        Toast.makeText(this, R.string.message_success, Toast.LENGTH_SHORT).show()
+        fingerprintIcon.setImageDrawable(iconFingerprintEnabled)
+        finger.subscribe(this)
+    }
+
+    override fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+        fingerprintIcon.setImageDrawable(iconFingerprintError)
+        finger.subscribe(this)
     }
 }

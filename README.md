@@ -94,12 +94,10 @@ val finger = Finger(applicationContext, errors, true)
 The latter uses only the system error messages if no own error message can be found in the map. So you can very well customize when to show which message.
 
 
+
 ### Proguard
 -keep class de.adorsys.android.finger.**
-
 -dontwarn de.adorsys.android.finger.**
 
 ### Contributors
-[@drilonreqica](https://github.com/drilonreqica)
-
-[@itsmortoncornelius](https://github.com/itsmortoncornelius)
+[@luckyhandler](https://github.com/luckyhandler)

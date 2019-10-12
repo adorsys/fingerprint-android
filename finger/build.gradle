@@ -27,8 +27,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    api 'androidx.biometric:biometric:1.0.0-alpha03'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    api 'androidx.biometric:biometric:1.0.0-rc01'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 

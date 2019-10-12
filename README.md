@@ -11,7 +11,7 @@ This fingerprint library aims to make the use of fingerprint authentication in y
 
 First, include _finger_ in your project by adding
   ````groovy
-  // minimum Version for this readme is 1.0.0-alpha
+  // minimum Version for this readme is 1.0.0-rc1
 implementation "de.adorsys.android:finger:${latestFingerVersion}"
 ````
 

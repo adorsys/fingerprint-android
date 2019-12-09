@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import de.adorsys.android.finger.Finger;
 import de.adorsys.android.finger.FingerListener;
-import kotlin.Triple;
 
 @SuppressLint("Registered") // Only exits for java documentation purposes
 public class MainActivityJava extends AppCompatActivity implements FingerListener {

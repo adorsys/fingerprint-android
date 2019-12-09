@@ -2,7 +2,6 @@ package de.adorsys.android.fingersample
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
-import android.hardware.biometrics.BiometricPrompt
 import android.hardware.fingerprint.FingerprintManager
 import android.os.Bundle
 import android.widget.Button
@@ -25,7 +24,9 @@ class MainActivity : AppCompatActivity(), FingerListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        finger = Finger(this)
+        finger = Finger(this, mapOf(
+            Pair(FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable))
+        ))
     }
 
     override fun onResume() {

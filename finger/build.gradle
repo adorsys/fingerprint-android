@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.mobbeel.plugin'
 
 android {
     compileSdkVersion 29
@@ -30,6 +31,10 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     api 'androidx.biometric:biometric:1.0.0'
+}
+
+aarPlugin {
+    includeAllInnerDependencies true  // It's false for default
 }
 
 ext {

@@ -11,7 +11,7 @@ This fingerprint library aims to make the use of fingerprint authentication in y
 
 First, include _finger_ in your project by adding
   ````groovy
-  // minimum Version for this readme is 1.0.0-rc1
+  // minimum Version for this readme is 1.0.0
 implementation "de.adorsys.android:finger:${latestFingerVersion}"
 ````
 
@@ -19,7 +19,7 @@ implementation "de.adorsys.android:finger:${latestFingerVersion}"
 You can use _finger_ as follows:
 
 ```` kotlin 
-val finger = Finger(applicationContext)
+val finger = Finger(context) // will internally always use application context
 finger.subscribe(object : FingerListener {
                   override fun onFingerprintAuthenticationSuccess() {
                       // The user authenticated successfully -> go on with your logic
@@ -32,18 +32,13 @@ finger.subscribe(object : FingerListener {
               })
               
 finger.showDialog(
-            // instance of FragmentActivity
-            this,
-            Triple(
-                // title
-                getString(R.string.text_fingerprint),  
-                // subtitle    
-                null,         
-                // description                             
-                null                                       
-            ),
-            // default parameter is android.R.cancel
-            "login with password"                          
+            activity = this,
+            strings = DialogStrings(
+                title = getString(R.string.text_fingerprint),  
+                subtitle = "" // defaults to null if nothing is assigned    
+                description = "" // defaults to null if nothing is assigned
+                cancelButtonText = "login with password" // default parameter is android.R.cancel 
+            )                         
         )
 ````
 
@@ -61,35 +56,32 @@ override fun onPause() {
 ````
 
 ##  error handling
-_finger_ provides its own error messages which are considered as fallback but they already contain more information as the standard system messages. Concerning the error handling _finger_ gives you the whole power to control what messages the user should receive for every error case. You can assign Finger a map of errors as follows:
+_finger_ usually emits the standard system error messages. But you can also assign _finger_ a map of errors for each error type:
  
 ```` kotlin
-// use import androidx.biometric.BiometricPrompt; --> is provided by the library
 val errors = mapOf(
-                Pair(BiometricPrompt.ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable)),
-                Pair(BiometricPrompt.ERROR_UNABLE_TO_PROCESS, getString(R.string.error_override_unable_to_process)),
-                Pair(BiometricPrompt.ERROR_TIMEOUT, getString(R.string.error_override_error_timeout)),
-                Pair(BiometricPrompt.ERROR_NO_SPACE, getString(R.string.error_override_no_space)),
-                Pair(BiometricPrompt.ERROR_CANCELED, getString(R.string.error_override_canceled)),
-                Pair(BiometricPrompt.ERROR_LOCKOUT, getString(R.string.error_override_lockout)),
-                Pair(BiometricPrompt.ERROR_VENDOR, getString(R.string.error_override_vendor)),
-                Pair(BiometricPrompt.ERROR_LOCKOUT_PERMANENT, getString(R.string.error_override_lockout_permanent)),
-                Pair(BiometricPrompt.ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)),
-                Pair(Finger.FINGERPRINT_ERROR_NOT_RECOGNIZED, getString(R.string.error_override_not_recognized)))
+	Pair(FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable)),
+    Pair(FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS, getString(R.string.error_override_unable_to_process)),
+    Pair(FingerprintManager.FINGERPRINT_ERROR_TIMEOUT, getString(R.string.error_override_error_timeout)),
+    Pair(FingerprintManager.FINGERPRINT_ERROR_NO_SPACE, getString(R.string.error_override_no_space)),
+    Pair(FingerprintManager.FINGERPRINT_ERROR_CANCELED, getString(R.string.error_override_canceled)),
+    Pair(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT, getString(R.string.error_override_lockout)),
+    Pair(FingerprintManager.FINGERPRINT_ERROR_VENDOR, getString(R.string.error_override_vendor)),
+    Pair(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT, getString(R.string.error_override_lockout_permanent)),
+    Pair(FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)),
+    Pair(Finger.ERROR_NOT_RECOGNIZED, getString(R.string.error_override_not_recognized)))
 val finger = Finger(applicationContext, errors)
 ````
 
 Usually, errors is defined as an emptyMap() as default argument.
    
-You can also force the library to use the system's human readable error messages
-
 ```` kotlin
-val finger = Finger(applicationContext, useSystemErrors = true)
+val finger = Finger(context = this)
 ````
 or
 
 ```` kotlin
-val finger = Finger(applicationContext, errors, true)
+val finger = Finger(context = this, errors = errors)
 ````
 The latter uses only the system error messages if no own error message can be found in the map. So you can very well customize when to show which message.
 
@@ -97,7 +89,6 @@ The latter uses only the system error messages if no own error message can be fo
 
 ### Proguard
 -keep class de.adorsys.android.finger.**
-
 -dontwarn de.adorsys.android.finger.**
 
 ### Contributors

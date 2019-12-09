@@ -32,7 +32,7 @@ public class MainActivityJava extends AppCompatActivity implements FingerListene
         iconFingerprintError = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_fingerprint_off, getTheme());
 
         // You can also assign a map of error strings for the errors defined in the lib as second parameter
-        finger = new Finger(getApplicationContext());
+        finger = new Finger(this);
     }
 
     @Override
@@ -83,13 +83,8 @@ public class MainActivityJava extends AppCompatActivity implements FingerListene
     private void showDialog() {
         finger.showDialog(
                 this,
-                new Triple<String, String, String>(
-                        // title
-                        getString(R.string.text_fingerprint),
-                        // subtitle
-                        null,
-                        // description
-                        null
+                new Finger.DialogStrings(
+                        getString(R.string.text_fingerprint)
                 )
         );
     }

@@ -5,7 +5,6 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import android.text.TextUtils
 import androidx.biometric.BiometricPrompt
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.fragment.app.FragmentActivity
@@ -14,19 +13,10 @@ import java.util.concurrent.Executors
 /**
  * This class handles the fingerprint communication with the user's system and simplifies its API.
  *
- * @param errors You can assign the class your personal error strings for the error codes by passing
- *     a map of fingerprint error codes and their mappings
- *
- * @param useSystemErrors You can force the library to use the human readable error string returned by the system
- *     but in at least the two locked cases it is not recommended. The system error messages don't inform the user
- *     what he/she has to do and the library doesn't subscribe the authorization until the necessary condition is true again.
- *     This is explained in the library's error messages.
+ * @param context Any android context which is always mapped to the application context
+ * @param errors You can assign your personal error strings to the platform's {@link BiometricPrompt} error codes to display them to the user
  */
-class Finger @JvmOverloads constructor(
-    context: Context,
-    private val errors: Map<Int, String> = emptyMap(),
-    private val useSystemErrors: Boolean = false
-) {
+class Finger @JvmOverloads constructor(context: Context, private val errors: Map<Int, String> = emptyMap()) {
 
     private val applicationContext = context.applicationContext
     private val handler = Handler()
@@ -71,84 +61,29 @@ class Finger @JvmOverloads constructor(
         fingerListener = null
     }
 
-    private fun getErrorMessage(code: Int, errString: CharSequence?): String {
-        return when (code) {
-            BiometricPrompt.ERROR_HW_NOT_PRESENT,
-            BiometricPrompt.ERROR_HW_UNAVAILABLE ->
-                if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_hardware_unavailable))
-            BiometricPrompt.ERROR_UNABLE_TO_PROCESS ->
-                if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_unable_to_process))
-            BiometricPrompt.ERROR_TIMEOUT ->
-                if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_timeout))
-            BiometricPrompt.ERROR_NO_SPACE ->
-                if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_no_space))
-            BiometricPrompt.ERROR_CANCELED ->
-                if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_canceled))
-            BiometricPrompt.ERROR_LOCKOUT ->
-                if (errors.contains(code)) errors.getValue(code)
-                // you should not use the string returned by the system to make sure the user
-                // knows that he/she has to wait for 30 seconds
-                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_lockout))
-            BiometricPrompt.ERROR_VENDOR ->
-                if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_not_recognized))
-            BiometricPrompt.ERROR_LOCKOUT_PERMANENT ->
-                if (errors.contains(code)) errors.getValue(code)
-                // you should not use the string returned by the system to make sure the user
-                // knows that he/she has to lock the system and return by using another pattern
-                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_lockout_permanent))
-            BiometricPrompt.ERROR_USER_CANCELED ->
-                if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_user_cancelled))
-            FINGERPRINT_ERROR_NOT_RECOGNIZED,
-            BiometricPrompt.ERROR_NO_BIOMETRICS ->
-                if (errors.contains(code)) errors.getValue(code)
-                else return determineErrorStringSource(errString?.toString(), applicationContext.getString(R.string.fingerprint_error_not_recognized))
-            else -> return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
-        }
-    }
-
-    private fun determineErrorStringSource(systemErrorString: String?, libraryErrorString: String): String {
-        return if (useSystemErrors && !TextUtils.isEmpty(systemErrorString)) {
-            systemErrorString.toString()
-        } else {
-            libraryErrorString
-        }
-    }
-
     /**
      * Shows an fingerprint dialog depending on the API level.
      *
      * @param activity
-     * @param strings contains the strings needed in the dialog - first: title, second: subtitle, third: message
-     * @param cancelButtonText contains the text resource needed for the button -
-     * the string which should be displayed on the cancel button, defaults to android.R.string.cancel
+     * @param strings contains the strings needed in the dialog - title, subtitle, message, cancel button text
      */
-    @JvmOverloads
     fun showDialog(
         activity: FragmentActivity,
-        strings: Triple<String, String?, String?>,
-        cancelButtonText: String? = null
+        strings: DialogStrings
     ) {
         // temporary workaround for NullPointerException in androidx.biometric library
         // See more at https://issuetracker.google.com/issues/122054485
         handler.postDelayed({
-            showBiometricPrompt(activity, strings, cancelButtonText)
+            showBiometricPrompt(activity, strings)
         }, 250)
     }
 
     private fun showBiometricPrompt(
         activity: FragmentActivity,
-        strings: Triple<String, String?, String?>,
-        cancelButtonText: String?
+        strings: DialogStrings
     ) {
 
-        val (title, subtitle, description) = strings
+        val (title, subtitle, description, cancelButtonText) = strings
 
         val prompt = BiometricPrompt(activity, Executors.newSingleThreadExecutor(), object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -166,8 +101,8 @@ class Finger @JvmOverloads constructor(
             override fun onAuthenticationFailed() {
                 activity.runOnUiThread {
                     fingerListener?.onFingerprintAuthenticationFailure(
-                        getErrorMessage(FINGERPRINT_ERROR_NOT_RECOGNIZED, null),
-                        FINGERPRINT_ERROR_NOT_RECOGNIZED
+                        getErrorMessage(ERROR_NOT_RECOGNIZED, null),
+                        ERROR_NOT_RECOGNIZED
                     )
                 }
             }
@@ -183,7 +118,56 @@ class Finger @JvmOverloads constructor(
         prompt.authenticate(promptInfo)
     }
 
-    companion object {
-        const val FINGERPRINT_ERROR_NOT_RECOGNIZED = -999
+    private fun getErrorMessage(code: Int, errString: CharSequence?): String {
+        return when (code) {
+            BiometricPrompt.ERROR_HW_NOT_PRESENT,
+            BiometricPrompt.ERROR_HW_UNAVAILABLE ->
+                if (errors.contains(code)) errors.getValue(code)
+                else return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+            BiometricPrompt.ERROR_UNABLE_TO_PROCESS ->
+                if (errors.contains(code)) errors.getValue(code)
+                else return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+            BiometricPrompt.ERROR_TIMEOUT ->
+                if (errors.contains(code)) errors.getValue(code)
+                else return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+            BiometricPrompt.ERROR_NO_SPACE ->
+                if (errors.contains(code)) errors.getValue(code)
+                else return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+            BiometricPrompt.ERROR_CANCELED ->
+                if (errors.contains(code)) errors.getValue(code)
+                else return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+            BiometricPrompt.ERROR_LOCKOUT ->
+                if (errors.contains(code)) errors.getValue(code)
+                // you should not use the string returned by the system to make sure the user
+                // knows that he/she has to wait for 30 seconds
+                else return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+            BiometricPrompt.ERROR_VENDOR ->
+                if (errors.contains(code)) errors.getValue(code)
+                else return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+            BiometricPrompt.ERROR_LOCKOUT_PERMANENT ->
+                if (errors.contains(code)) errors.getValue(code)
+                // you should not use the string returned by the system to make sure the user
+                // knows that he/she has to lock the system and return by using another pattern
+                else return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+            BiometricPrompt.ERROR_USER_CANCELED ->
+                if (errors.contains(code)) errors.getValue(code)
+                else return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+            ERROR_NOT_RECOGNIZED,
+            BiometricPrompt.ERROR_NO_BIOMETRICS ->
+                if (errors.contains(code)) errors.getValue(code)
+                else return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+            else -> return errString?.toString() ?: applicationContext.getString(R.string.fingerprint_error_unknown)
+        }
     }
+
+    companion object {
+        const val ERROR_NOT_RECOGNIZED = -999
+    }
+
+    data class DialogStrings @JvmOverloads constructor (
+        @JvmField val title: String,
+        @JvmField val subTitle: String? = null,
+        @JvmField val description: String? = null,
+        @JvmField val cancelButtonText: String? = null
+    )
 }

@@ -1,6 +1,9 @@
 package de.adorsys.android.fingersample
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
+import android.hardware.biometrics.BiometricPrompt
+import android.hardware.fingerprint.FingerprintManager
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
@@ -18,10 +21,11 @@ class MainActivity : AppCompatActivity(), FingerListener {
     private var iconFingerprintError: Drawable? = null
 
 
+    @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        finger = Finger(applicationContext)
+        finger = Finger(this)
     }
 
     override fun onResume() {
@@ -56,14 +60,7 @@ class MainActivity : AppCompatActivity(), FingerListener {
     private fun showDialog() {
         finger.showDialog(
             this,
-            Triple(
-                // title
-                getString(R.string.text_fingerprint),
-                // subtitle
-                null,
-                // description
-                null
-            )
+            Finger.DialogStrings(title = getString(R.string.text_fingerprint))
         )
     }
 

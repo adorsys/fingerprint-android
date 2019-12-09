@@ -11,7 +11,7 @@ This fingerprint library aims to make the use of fingerprint authentication in y
 
 First, include _finger_ in your project by adding
   ````groovy
-  // minimum Version for this readme is 1.0.0
+  // minimum Version for this readme is 1.0.0-rc3
 implementation "de.adorsys.android:finger:${latestFingerVersion}"
 ````
 
@@ -61,15 +61,15 @@ _finger_ usually emits the standard system error messages. But you can also assi
 ```` kotlin
 val errors = mapOf(
 	Pair(FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable)),
-    Pair(FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS, getString(R.string.error_override_unable_to_process)),
-    Pair(FingerprintManager.FINGERPRINT_ERROR_TIMEOUT, getString(R.string.error_override_error_timeout)),
-    Pair(FingerprintManager.FINGERPRINT_ERROR_NO_SPACE, getString(R.string.error_override_no_space)),
-    Pair(FingerprintManager.FINGERPRINT_ERROR_CANCELED, getString(R.string.error_override_canceled)),
-    Pair(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT, getString(R.string.error_override_lockout)),
-    Pair(FingerprintManager.FINGERPRINT_ERROR_VENDOR, getString(R.string.error_override_vendor)),
-    Pair(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT, getString(R.string.error_override_lockout_permanent)),
-    Pair(FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)),
-    Pair(Finger.ERROR_NOT_RECOGNIZED, getString(R.string.error_override_not_recognized)))
+	Pair(FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS, getString(R.string.error_override_unable_to_process)),
+	Pair(FingerprintManager.FINGERPRINT_ERROR_TIMEOUT, getString(R.string.error_override_error_timeout)),
+	Pair(FingerprintManager.FINGERPRINT_ERROR_NO_SPACE, getString(R.string.error_override_no_space)),
+	Pair(FingerprintManager.FINGERPRINT_ERROR_CANCELED, getString(R.string.error_override_canceled)),
+	Pair(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT, getString(R.string.error_override_lockout)),
+	Pair(FingerprintManager.FINGERPRINT_ERROR_VENDOR, getString(R.string.error_override_vendor)),
+	Pair(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT, getString(R.string.error_override_lockout_permanent)),
+	Pair(FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)),
+	Pair(Finger.ERROR_NOT_RECOGNIZED, getString(R.string.error_override_not_recognized)))
 val finger = Finger(applicationContext, errors)
 ````
 
@@ -89,6 +89,7 @@ The latter uses only the system error messages if no own error message can be fo
 
 ### Proguard
 -keep class de.adorsys.android.finger.**
+
 -dontwarn de.adorsys.android.finger.**
 
 ### Contributors

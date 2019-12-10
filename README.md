@@ -23,24 +23,24 @@ You can use _finger_ as follows:
 val finger = Finger(context) // will internally always use application context
 finger.subscribe(object : FingerListener {
 	override fun onFingerprintAuthenticationSuccess() {
-    	// The user authenticated successfully -> go on with your logic
-    }
+    		// The user authenticated successfully -> go on with your logic
+    	}
                   
 	override fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int) {
-    	// Show the user the human readable error message and use the error code if necessary 
-        // and subscribe again
+    		// Show the user the human readable error message and use the error code if necessary 
+        	// and subscribe again
 	}
 })
               
 finger.showDialog(
-	activity = this,
-	strings = DialogStrings(
-    	title = getString(R.string.text_fingerprint),  
-        subtitle = "" // defaults to null if nothing is assigned    
-        description = "" // defaults to null if nothing is assigned
-        cancelButtonText = "login with password" // default parameter is android.R.cancel 
-    )
-)
+            activity = this,
+            strings = Finger.DialogStrings(
+                title = getString(R.string.text_fingerprint),
+                subTitle = "", // defaults to null if nothing is assigned    
+                description = "", // defaults to null if nothing is assigned
+                cancelButtonText = "login with password" // default parameter is android.R.cancel 
+            )
+        )
 ````
 
 You should subscribe in onResume and unsubscribe in onPause:

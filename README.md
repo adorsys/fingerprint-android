@@ -11,8 +11,9 @@ This fingerprint library aims to make the use of fingerprint authentication in y
 
 First, include _finger_ in your project by adding
   ````groovy
-  // minimum Version for this readme is 1.0.0-rc3
+  // add the finger and also the biometric dependency dependency 
 implementation "de.adorsys.android:finger:${latestFingerVersion}"
+implementation "androidx.biometric:biometric:1.0.0"
 ````
 
 ## usage
@@ -21,32 +22,32 @@ You can use _finger_ as follows:
 ```` kotlin 
 val finger = Finger(context) // will internally always use application context
 finger.subscribe(object : FingerListener {
-                  override fun onFingerprintAuthenticationSuccess() {
-                      // The user authenticated successfully -> go on with your logic
-                  }
+	override fun onFingerprintAuthenticationSuccess() {
+    	// The user authenticated successfully -> go on with your logic
+    }
                   
-                  override fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int) {
-                      // Show the user the human readable error message and use the error code if necessary 
-                      // and subscribe again
-                  }
-              })
+	override fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int) {
+    	// Show the user the human readable error message and use the error code if necessary 
+        // and subscribe again
+	}
+})
               
 finger.showDialog(
-            activity = this,
-            strings = DialogStrings(
-                title = getString(R.string.text_fingerprint),  
-                subtitle = "" // defaults to null if nothing is assigned    
-                description = "" // defaults to null if nothing is assigned
-                cancelButtonText = "login with password" // default parameter is android.R.cancel 
-            )                         
-        )
+	activity = this,
+	strings = DialogStrings(
+    	title = getString(R.string.text_fingerprint),  
+        subtitle = "" // defaults to null if nothing is assigned    
+        description = "" // defaults to null if nothing is assigned
+        cancelButtonText = "login with password" // default parameter is android.R.cancel 
+    )
+)
 ````
 
 You should subscribe in onResume and unsubscribe in onPause:
 ````kotlin
 override fun onResume() {
-    super.onResume()
-    finger.subscribe(this)
+	super.onResume()
+	finger.subscribe(this)
 }
 
 override fun onPause() {
@@ -60,20 +61,20 @@ _finger_ usually emits the standard system error messages. But you can also assi
  
 ```` kotlin
 val errors = mapOf(
-	Pair(FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable)),
-	Pair(FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS, getString(R.string.error_override_unable_to_process)),
-	Pair(FingerprintManager.FINGERPRINT_ERROR_TIMEOUT, getString(R.string.error_override_error_timeout)),
-	Pair(FingerprintManager.FINGERPRINT_ERROR_NO_SPACE, getString(R.string.error_override_no_space)),
-	Pair(FingerprintManager.FINGERPRINT_ERROR_CANCELED, getString(R.string.error_override_canceled)),
-	Pair(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT, getString(R.string.error_override_lockout)),
-	Pair(FingerprintManager.FINGERPRINT_ERROR_VENDOR, getString(R.string.error_override_vendor)),
-	Pair(FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT, getString(R.string.error_override_lockout_permanent)),
-	Pair(FingerprintManager.FINGERPRINT_ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)),
+	Pair(BiometricPrompt.ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable)),
+	Pair(BiometricPrompt.ERROR_UNABLE_TO_PROCESS, getString(R.string.error_override_unable_to_process)),
+	Pair(BiometricPrompt.ERROR_TIMEOUT, getString(R.string.error_override_error_timeout)),
+	Pair(BiometricPrompt.ERROR_NO_SPACE, getString(R.string.error_override_no_space)),
+	Pair(BiometricPrompt.ERROR_CANCELED, getString(R.string.error_override_canceled)),
+	Pair(BiometricPrompt.ERROR_LOCKOUT, getString(R.string.error_override_lockout)),
+	Pair(BiometricPrompt.ERROR_VENDOR, getString(R.string.error_override_vendor)),
+	Pair(BiometricPrompt.ERROR_LOCKOUT_PERMANENT, getString(R.string.error_override_lockout_permanent)),
+	Pair(BiometricPrompt.ERROR_USER_CANCELED, getString(R.string.error_override_user_cancel)),
 	Pair(Finger.ERROR_NOT_RECOGNIZED, getString(R.string.error_override_not_recognized)))
 val finger = Finger(applicationContext, errors)
 ````
 
-Usually, errors is defined as an emptyMap() as default argument.
+Usually, `errors` is defined as an `emptyMap()` as default argument.
    
 ```` kotlin
 val finger = Finger(context = this)

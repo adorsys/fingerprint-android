@@ -24,9 +24,11 @@ class MainActivity : AppCompatActivity(), FingerListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        finger = Finger(this, mapOf(
-            Pair(FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable))
-        ))
+        finger = Finger(
+            this, mapOf(
+                Pair(FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE, getString(R.string.error_override_hw_unavailable))
+            )
+        )
     }
 
     override fun onResume() {

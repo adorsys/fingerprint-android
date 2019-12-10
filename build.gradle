@@ -7,14 +7,12 @@ buildscript {
     repositories {
         jcenter()
         google()
-        maven { url "https://plugins.gradle.org/m2/" }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        classpath "com.mobbeel.plugin:fat-aar:2.0.1"
     }
 }
 

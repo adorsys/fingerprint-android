@@ -5,8 +5,9 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
 import android.os.Handler
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.biometric.BiometricPrompt
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.fragment.app.FragmentActivity
 import java.util.concurrent.Executors
 
@@ -14,40 +15,47 @@ import java.util.concurrent.Executors
  * This class handles the fingerprint communication with the user's system and simplifies its API.
  *
  * @param context Any android context which is always mapped to the application context
- * @param errors You can assign your personal error strings to the platform's {@link BiometricPrompt} error codes to display them to the user
- */
+ * @param errors You can assign your personal error strings to the platform's {@link BiometricPrompt} error codes
+ * available in {@link BiometricConstants} to display them to the user.
+ * These currently are:
+ *
+ * ERROR_HW_UNAVAILABLE = 1
+ * ERROR_UNABLE_TO_PROCESS = 2
+ * ERROR_TIMEOUT = 3
+ * ERROR_NO_SPACE = 4
+ * ERROR_CANCELED = 5
+ * ERROR_LOCKOUT = 7
+ * ERROR_VENDOR = 8
+ * ERROR_LOCKOUT_PERMANENT = 9
+ * ERROR_USER_CANCELED = 10
+ * ERROR_NO_BIOMETRICS = 11
+ * ERROR_HW_NOT_PRESENT = 12
+ * ERROR_NEGATIVE_BUTTON = 13
+ * ERROR_NO_DEVICE_CREDENTIAL = 14
+ *
+ **/
 class Finger @JvmOverloads constructor(context: Context, private val errors: Map<Int, String> = emptyMap()) {
 
     private val applicationContext = context.applicationContext
     private val handler = Handler()
-    private var fingerprintManager: FingerprintManagerCompat? = null
+    private val biometricManager: BiometricManager? = BiometricManager.from(context)
     private var fingerListener: FingerListener? = null
 
-    init {
-        fingerprintManager =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                FingerprintManagerCompat.from(context)
-            } else {
-                null
-            }
-    }
-
-    // There is no active permission request required for using the fingerprint
-    // and it is declared inside the AndroidManifest
+    /**
+     * Check if the device has suitable hardware for fingerprint authentication
+     * and if the device has setup fingerprints to check on.
+     */
     @SuppressLint("MissingPermission")
     @TargetApi(Build.VERSION_CODES.M)
-    fun hasFingerprintEnrolled(): Boolean {
-        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && fingerprintManager?.isHardwareDetected == true
-                && fingerprintManager?.hasEnrolledFingerprints() == true)
+    fun hasFingerprintEnrolled() = when (biometricManager?.canAuthenticate()) {
+        BIOMETRIC_SUCCESS -> true
+        else -> false
     }
 
     /**
-     * Subscribe for the fingerprint events by passing an FingerListener and calling FingerprintManager.authenticate.
-     * If the FingerprintManager is currently locked the lockoutRunnable is started instead of subscribing
+     * Subscribe for the fingerprint events by passing an {@link FingerListener}.
+     * Best place to to this is onResume.
      */
-    // There is no active permission request required for using the fingerprint
-    // and it is declared inside the AndroidManifest
     @SuppressLint("MissingPermission")
     @TargetApi(Build.VERSION_CODES.M)
     fun subscribe(listener: FingerListener) {
@@ -56,6 +64,7 @@ class Finger @JvmOverloads constructor(context: Context, private val errors: Map
 
     /**
      * Call unSubscribe to make sure that a listener is not notified after it should be.
+     * Best place to to this is onPause.
      */
     fun unSubscribe() {
         fingerListener = null
@@ -164,7 +173,7 @@ class Finger @JvmOverloads constructor(context: Context, private val errors: Map
         const val ERROR_NOT_RECOGNIZED = -999
     }
 
-    data class DialogStrings @JvmOverloads constructor (
+    data class DialogStrings @JvmOverloads constructor(
         @JvmField val title: String,
         @JvmField val subTitle: String? = null,
         @JvmField val description: String? = null,

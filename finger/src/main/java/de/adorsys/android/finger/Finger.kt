@@ -1,6 +1,5 @@
 package de.adorsys.android.finger
 
-import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
@@ -49,7 +48,6 @@ class Finger @JvmOverloads constructor(context: Context, private val errors: Map
      * Check if the device has suitable hardware for fingerprint authentication
      * and if the device has setup fingerprints to check on.
      */
-    @SuppressLint("MissingPermission")
     @TargetApi(Build.VERSION_CODES.M)
     fun hasFingerprintEnrolled() = when (biometricManager?.canAuthenticate()) {
         BIOMETRIC_SUCCESS -> true
@@ -60,7 +58,6 @@ class Finger @JvmOverloads constructor(context: Context, private val errors: Map
      * Subscribe for the fingerprint events by passing an {@link FingerListener}.
      * Best place to to this is onResume.
      */
-    @SuppressLint("MissingPermission")
     @TargetApi(Build.VERSION_CODES.M)
     fun subscribe(listener: FingerListener) {
         fingerListener = listener

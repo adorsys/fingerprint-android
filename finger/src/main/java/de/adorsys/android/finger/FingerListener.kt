@@ -1,5 +1,8 @@
 package de.adorsys.android.finger
 
+/**
+ * Interface getting success or failure result from [Finger]
+ */
 interface FingerListener {
 
     /**

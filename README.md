@@ -86,7 +86,9 @@ val finger = Finger(context = this, errors = errors)
 ````
 The latter uses only the system error messages if no own error message can be found in the map. So you can very well customize when to show which message.
 
-
+### Documentation
+This project contains documentation. To generate it run `./gradlew finger:dokka`. 
+You will find it at `project/documentation`. 
 
 ### Proguard
 -keep class de.adorsys.android.finger.**

@@ -38,8 +38,12 @@ class Finger @JvmOverloads constructor(context: Context, private val errors: Map
 
     private val applicationContext = context.applicationContext
     private val handler = Handler()
-    private val biometricManager: BiometricManager? = BiometricManager.from(context)
     private var fingerListener: FingerListener? = null
+
+    // lazy initialization as maybe never assigned
+    private val biometricManager: BiometricManager? by lazy {
+        BiometricManager.from(context)
+    }
 
     /**
      * Check if the device has suitable hardware for fingerprint authentication

@@ -13,26 +13,26 @@ import java.util.concurrent.Executors
 /**
  * This class handles the fingerprint communication with the user's system and simplifies its API.
  *
- * @param context Any android context which is always mapped to the application context
- * @param errors You can assign your personal error strings to the platform's {@link BiometricPrompt} error codes
- * available in {@link BiometricConstants} to display them to the user.
+ * @param context Any android context which is always mapped to the application context.
+ * @param errors You can assign your personal error strings to the androidx.biometric.BiometricPrompt's
+ * error codes available in BiometricConstants to display them to the user.
+
  * These currently are:
+ * - ERROR_HW_UNAVAILABLE,
+ * - ERROR_UNABLE_TO_PROCESS,
+ * - ERROR_TIMEOUT,
+ * - ERROR_NO_SPACE,
+ * - ERROR_CANCELED,
+ * - ERROR_LOCKOUT,
+ * - ERROR_VENDOR,
+ * - ERROR_LOCKOUT_PERMANENT,
+ * - ERROR_USER_CANCELED,
+ * - ERROR_NO_BIOMETRICS,
+ * - ERROR_HW_NOT_PRESENT,
+ * - ERROR_NEGATIVE_BUTTON,
+ * - ERROR_NO_DEVICE_CREDENTIAL
  *
- * ERROR_HW_UNAVAILABLE = 1
- * ERROR_UNABLE_TO_PROCESS = 2
- * ERROR_TIMEOUT = 3
- * ERROR_NO_SPACE = 4
- * ERROR_CANCELED = 5
- * ERROR_LOCKOUT = 7
- * ERROR_VENDOR = 8
- * ERROR_LOCKOUT_PERMANENT = 9
- * ERROR_USER_CANCELED = 10
- * ERROR_NO_BIOMETRICS = 11
- * ERROR_HW_NOT_PRESENT = 12
- * ERROR_NEGATIVE_BUTTON = 13
- * ERROR_NO_DEVICE_CREDENTIAL = 14
- *
- **/
+ */
 class Finger @JvmOverloads constructor(context: Context, private val errors: Map<Int, String> = emptyMap()) {
 
     private val applicationContext = context.applicationContext
@@ -55,7 +55,7 @@ class Finger @JvmOverloads constructor(context: Context, private val errors: Map
     }
 
     /**
-     * Subscribe for the fingerprint events by passing an {@link FingerListener}.
+     * Subscribe for the fingerprint events by passing an [FingerListener].
      * Best place to to this is onResume.
      */
     @TargetApi(Build.VERSION_CODES.M)
@@ -72,7 +72,7 @@ class Finger @JvmOverloads constructor(context: Context, private val errors: Map
     }
 
     /**
-     * Shows an fingerprint dialog depending on the API level.
+     * Shows a biometric prompt and propagates the result of the dialog to [FingerListener].
      *
      * @param activity
      * @param strings contains the strings needed in the dialog - title, subtitle, message, cancel button text

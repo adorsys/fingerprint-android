@@ -1,0 +1,24 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>FingerListener.onFingerprintAuthenticationFailure - finger</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">finger</a>&nbsp;/&nbsp;<a href="../index.html">de.adorsys.android.finger</a>&nbsp;/&nbsp;<a href="index.html">FingerListener</a>&nbsp;/&nbsp;<a href="./on-fingerprint-authentication-failure.html">onFingerprintAuthenticationFailure</a><br/>
+<br/>
+<h1>onFingerprintAuthenticationFailure</h1>
+<a name="de.adorsys.android.finger.FingerListener$onFingerprintAuthenticationFailure(kotlin.String, kotlin.Int)"></a>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">onFingerprintAuthenticationFailure</span><span class="symbol">(</span><span class="identifier" id="de.adorsys.android.finger.FingerListener$onFingerprintAuthenticationFailure(kotlin.String, kotlin.Int)/errorMessage">errorMessage</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="de.adorsys.android.finger.FingerListener$onFingerprintAuthenticationFailure(kotlin.String, kotlin.Int)/errorCode">errorCode</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Called after an error or authentication failure.</p>
+<h3>Parameters</h3>
+<p><a name="errorMessage"></a>
+<code>errorMessage</code> - An informative string given by the underlying fingerprint sdk that can be
+displayed in the ui. This string is never null, and will be localized to the
+current locale. You should show this text to the user, or some other message of
+your own based on the failureReason.</p>
+<p><a name="errorCode"></a>
+<code>errorCode</code> - The specific error code returned by the module's underlying sdk. Check the
+constants defined in the module for possible values and their meanings.</p>
+</BODY>
+</HTML>
